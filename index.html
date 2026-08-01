@@ -104,10 +104,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 .biz-card { background: var(--biz-card); border-radius: 8px; border: 1px solid var(--biz-border); padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 
 /* ========== 表格样式 ========== */
-.data-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: auto; }
-.data-table th { padding: 12px 16px; text-align: left; font-weight: 600; font-size: 13px; border-bottom: 1px solid rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.08); color: var(--stu-light-purple); white-space: nowrap; min-width: 80px; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: auto; }
+.data-table th { padding: 8px 10px; text-align: left; font-weight: 600; font-size: 12px; border-bottom: 1px solid rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.08); color: var(--stu-light-purple); white-space: nowrap; min-width: 60px; }
 .biz-layout .data-table th { background: rgba(59, 130, 246, 0.08); color: var(--biz-blue); border-bottom: 1px solid var(--biz-border); }
-.data-table td { padding: 12px 16px; color: var(--stu-text); border-bottom: 1px solid rgba(139, 92, 246, 0.08); white-space: nowrap; min-width: 60px; }
+.data-table td { padding: 8px 10px; color: var(--stu-text); border-bottom: 1px solid rgba(139, 92, 246, 0.08); white-space: nowrap; min-width: 40px; font-size: 13px; }
 .biz-layout .data-table td { color: var(--biz-text); border-bottom: 1px solid var(--biz-border); }
 .data-table tr:hover td { background: rgba(139, 92, 246, 0.04); }
 .biz-layout .data-table tr:hover td { background: rgba(59, 130, 246, 0.04); }
@@ -184,7 +184,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
     .login-box { padding: 20px 16px; }
     .login-logo h1 { font-size: 20px; }
     .chart-container { height: 180px; }
-    .data-table th, .data-table td { padding: 8px 10px; font-size: 13px; }
+    .data-table th, .data-table td { padding: 6px 8px; font-size: 12px; }
     .feedback-toast { top: auto; bottom: 80px; right: 12px; left: 12px; transform: translateY(120%); }
     .feedback-toast.show { transform: translateY(0); }
 }
@@ -300,16 +300,16 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
             <div class="biz-top-bar"><h2 id="teacherPageTitle">成绩查询/上传</h2><div class="user-info"><span id="teacherNameDisplay">教师</span><div class="user-avatar" style="background:var(--biz-blue);">教</div></div></div>
             <div id="teacherUpload" class="page-content">
                 <div class="biz-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.04) 0%, rgba(147,51,234,0.04) 100%); border: 1px solid rgba(59,130,246,0.15);">
-                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">📊 班级成绩总览</h3>
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">📊 成绩查询</h3>
                         <div class="tab-bar" id="classTypeTabs">
                         <!-- 班型选项卡将由 JS 动态生成 -->
                     </div>
                     </div>
                     <table class="data-table"><thead><tr><th>姓名</th><th>入门测1</th><th>入门测2</th><th>入门测3</th><th>月考1</th></tr></thead><tbody id="teacherOverviewBody"></tbody></table>
                 </div>
-                <div class="biz-card" style="background: linear-gradient(135deg, rgba(16,185,129,0.04) 0%, rgba(59,130,246,0.04) 100%); border: 1px solid rgba(16,185,129,0.15); margin-top: 20px;">
-                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">📤 上传成绩</h3><span style="font-size:12px;color:var(--biz-text2);">支持 .xlsx / .xls / .csv</span></div>
-                    <div class="upload-zone" id="scoreUploadZone"><p style="font-size:48px;margin-bottom:12px;">📁</p><p>拖拽Excel文件到此处，或点击上传</p></div>
+                <div class="biz-card" style="background: linear-gradient(135deg, #059669 0%, #047857 100%); border: 1px solid #047857; margin-top: 20px; color: white;">
+                    <div class="card-header"><h3 class="card-title" style="color:white;">📤 成绩上传</h3><span style="font-size:12px;color:rgba(255,255,255,0.7);">支持 .xlsx / .xls / .csv</span></div>
+                    <div class="upload-zone" id="scoreUploadZone" style="background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3);"><p style="font-size:48px;margin-bottom:12px;">📁</p><p style="color:white;">拖拽Excel文件到此处，或点击上传</p></div>
                     <input type="file" id="scoreFileInput" accept=".xlsx,.xls,.csv" style="display:none;">
                     <div id="uploadPreview" style="margin-top:20px;"></div>
                 </div>
