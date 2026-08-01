@@ -85,10 +85,20 @@ app.get('/api/students', async (req, res) => {
     }
 });
 
-// 3. 添加学生
+// 3. 添加学生（支持电话查重）
 app.post('/api/students', async (req, res) => {
     try {
         const { name, account, password, phone, classId } = req.body;
+        
+        // 电话查重：如果电话已存在，返回已有学生（不重复创建）
+        if (phone && phone !== '13800000000') {
+            const existing = await runQuery('SELECT * FROM users WHERE phone = ? AND role = "student"', [phone]);
+            if (existing && existing.length > 0) {
+                // 电话已存在，返回已有学生信息（前端只增加成绩，不更新班级）
+                return res.json({ existing: true, student: existing[0] });
+            }
+        }
+        
         const id = 's' + String(Date.now()).slice(-6);
         
         await runStatement(
@@ -103,7 +113,7 @@ app.post('/api/students', async (req, res) => {
         );
         
         const newStudent = await runQuery('SELECT * FROM users WHERE id = ?', [id]);
-        res.json(newStudent[0]);
+        res.json({ existing: false, student: newStudent[0] });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
@@ -180,6 +190,35 @@ app.put('/api/students/:id', async (req, res) => {
         await runStatement(sql, params);
         const updated = await runQuery('SELECT * FROM users WHERE id = ?', [id]);
         res.json(updated[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 5.1 修改密码（学生/教师通用）
+app.put('/api/users/:id/password', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { oldPassword, newPassword } = req.body;
+        
+        // 验证新密码格式：6位数字
+        if (!/^\d{6}$/.test(newPassword)) {
+            return res.status(400).json({ error: '新密码必须是6位数字' });
+        }
+        
+        // 如果提供了旧密码，验证旧密码
+        if (oldPassword) {
+            const user = await runQuery('SELECT * FROM users WHERE id = ?', [id]);
+            if (!user || user.length === 0) {
+                return res.status(404).json({ error: '用户不存在' });
+            }
+            if (user[0].password !== oldPassword) {
+                return res.status(400).json({ error: '旧密码错误' });
+            }
+        }
+        
+        await runStatement('UPDATE users SET password = ? WHERE id = ?', [newPassword, id]);
+        res.json({ success: true, message: '密码修改成功' });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }

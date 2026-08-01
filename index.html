@@ -1725,6 +1725,7 @@ async function handleScoreUpload(file) {
             const gradeCol = allCols.find(c => c.includes('年级'));
             const subjectCol = allCols.find(c => c.includes('科目') || c.includes('学科'));
             const classTypeCol = allCols.find(c => c.includes('班型'));
+            const phoneCol = allCols.find(c => c.includes('电话') || c.includes('手机') || c.includes('联系'));
             
             if (!nameCol) {
                 showFeedback('error', '未找到"姓名"列，请检查文件格式');
@@ -1742,9 +1743,13 @@ async function handleScoreUpload(file) {
                 showFeedback('error', '未找到"班型"列，请检查文件格式');
                 return;
             }
+            if (!phoneCol) {
+                showFeedback('error', '未找到"联系电话"列，请检查文件格式。必须包含11位手机号码');
+                return;
+            }
             
             // 识别考试列（排除已知非成绩列）
-            const excludeCols = ['姓名', '年级', '科目', '学科', '班型', '班级类型', '任课教师', '备注', '平均分', '排名', '等级'];
+            const excludeCols = ['姓名', '年级', '科目', '学科', '班型', '班级类型', '任课教师', '电话', '手机', '联系', '备注', '平均分', '排名', '等级'];
             const examCols = allCols.filter(c => 
                 !excludeCols.some(ex => c === ex || c.includes(ex)) &&
                 !c.includes('平均') && !c.includes('排名') && !c.includes('等级')
@@ -1800,7 +1805,25 @@ async function handleScoreUpload(file) {
                 const rowSubjectName = String(row[subjectCol] || '').trim();
                 const rowSubjectId = subjectNameToId[rowSubjectName] || fileSubjectId;
                 
-                let targetStudent = allStudents.find(s => s.name === name);
+                const rowPhone = String(row[phoneCol] || '').trim().replace(/\D/g, '');
+                
+                // 验证电话号码：必须为11位数字
+                if (!/^\d{11}$/.test(rowPhone)) {
+                    html += `<tr><td style="font-weight:600;">${name}</td><td colspan="${uniqueExamCols.length + 1}" style="color:var(--stu-red);">❌ 电话号码格式错误：${row[phoneCol] || '空'}（必须为11位数字）</td></tr>`;
+                    continue;
+                }
+                
+                // 用电话号码查找学生（优先于姓名）
+                let targetStudent = allStudents.find(s => {
+                    const studentPhone = String(s.phone || '').replace(/\D/g, '');
+                    return studentPhone === rowPhone;
+                });
+                
+                // 如果电话没找到，再用姓名查找（兼容旧数据）
+                if (!targetStudent) {
+                    targetStudent = allStudents.find(s => s.name === name);
+                }
+                
                 let targetClassId = null;
                 
                 // 处理班型和班级
@@ -1841,49 +1864,41 @@ async function handleScoreUpload(file) {
                     targetClassId = targetClass ? targetClass.id : null;
                 }
                 
-                // 学生不存在则创建
+                // 学生不存在则创建（密码 = 电话末6位）
                 if (!targetStudent) {
                     try {
                         const newId = 's' + Date.now().toString().slice(-6) + Math.floor(Math.random()*100);
                         const newAccount = name.toLowerCase().replace(/\s/g, '').replace(/[^a-z]/g, '');
                         const finalAccount = newAccount || ('stu' + Date.now().toString().slice(-6));
+                        const initPassword = rowPhone.slice(-6); // 密码 = 电话末6位
                         const studentData = {
                             id: newId,
                             name: name,
                             account: finalAccount,
-                            password: '1234',
-                            phone: '13800000000',
+                            password: initPassword,
+                            phone: rowPhone,
                             classId: targetClassId || 'c1'
                         };
-                        await apiPost('/api/students', studentData);
-                        await loadAllData();
-                        targetStudent = allStudents.find(s => s.name === name);
-                        showFeedback('success', `✅ 已创建新学生：${name}`);
-                    } catch (err) {
-                        console.error('创建学生失败:', err);
-                    }
-                } else if (targetClassId && targetStudent.class_id !== targetClassId) {
-                    // 更新学生班级
-                    try {
-                        await apiPut('/api/students/' + targetStudent.id, { classId: targetClassId });
-                        targetStudent.class_id = targetClassId;
-                        const targetClass = allClasses.find(c => c.id === targetClassId);
-                        if (targetClass) {
-                            let classStudentIds = targetClass.student_ids ? JSON.parse(targetClass.student_ids) : [];
-                            if (!classStudentIds.includes(targetStudent.id)) {
-                                classStudentIds.push(targetStudent.id);
-                                await apiPost('/api/classes', {
-                                    id: targetClassId,
-                                    name: targetClass.name,
-                                    grade: targetClass.grade,
-                                    class_type_id: targetClass.class_type_id,
-                                    student_ids: classStudentIds
-                                });
-                            }
+                        const result = await apiPost('/api/students', studentData);
+                        
+                        if (result.existing) {
+                            // 电话已存在（后端返回已有学生）
+                            targetStudent = result.student;
+                            html += `<tr><td style="font-weight:600;">${name}</td><td>${rowClassType || '-'}</td>`;
+                        } else {
+                            await loadAllData();
+                            targetStudent = allStudents.find(s => s.phone === rowPhone);
+                            showFeedback('success', `✅ 已创建新学生：${name}，初始密码：${initPassword}`);
+                            html += `<tr><td style="font-weight:600;">${name}</td><td>${rowClassType || '-'}</td>`;
                         }
                     } catch (err) {
-                        console.error('更新学生班级失败:', err);
+                        console.error('创建学生失败:', err);
+                        html += `<tr><td style="font-weight:600;">${name}</td><td colspan="${uniqueExamCols.length + 1}" style="color:var(--stu-red);">❌ 创建失败</td></tr>`;
+                        continue;
                     }
+                } else {
+                    // 已有学生，只增加成绩（不更新班级）
+                    html += `<tr><td style="font-weight:600;">${name}</td><td>${rowClassType || '-'}</td>`;
                 }
                 
                 html += `<tr><td style="font-weight:600;">${name}</td><td>${rowClassType || '-'}</td>`;
