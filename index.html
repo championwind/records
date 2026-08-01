@@ -1765,8 +1765,7 @@ async function handleScoreUpload(file) {
             });
             
             if (uniqueExamCols.length === 0) {
-                showFeedback('error', '未识别到考试列');
-                return;
+                showFeedback('info', '未识别到成绩列，将只创建班级和学生信息');
             }
 
             // 统一读取第一行的年级和科目（假设整表同一科目）
@@ -1781,11 +1780,15 @@ async function handleScoreUpload(file) {
                 <p style="color:var(--biz-text);font-size:14px;">📋 <strong style="color:var(--biz-blue);">${fileGrade} · ${fileSubjectName}</strong>，${uniqueExamCols.length} 场考试</p>
                 <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">`;
             
-            uniqueExamCols.forEach(col => {
-                const existing = allExams.find(e => e.name === col.trim() && e.subject === fileSubjectId);
-                html += `<span style="background:${existing ? 'var(--stu-green)' : 'var(--stu-amber)'};color:white;padding:2px 10px;border-radius:4px;font-size:12px;">
-                    ${col} ${existing ? '✅已存在' : '🆕新考试'}</span>`;
-            });
+            if (uniqueExamCols.length > 0) {
+                uniqueExamCols.forEach(col => {
+                    const existing = allExams.find(e => e.name === col.trim() && e.subject === fileSubjectId);
+                    html += `<span style="background:${existing ? 'var(--stu-green)' : 'var(--stu-amber)'};color:white;padding:2px 10px;border-radius:4px;font-size:12px;">
+                        ${col} ${existing ? '✅已存在' : '🆕新考试'}</span>`;
+                });
+            } else {
+                html += `<span style="background:var(--stu-blue);color:white;padding:2px 10px;border-radius:4px;font-size:12px;">📋 仅创建学生信息，无成绩数据</span>`;
+            }
             html += '</div></div>';
             
             html += '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:400px;overflow-y:auto;border:1px solid var(--biz-border);border-radius:8px;"><table class="data-table" style="min-width:max-content;"><thead><tr><th>姓名</th><th>班型</th>';
@@ -1954,11 +1957,30 @@ async function handleScoreUpload(file) {
 
             document.getElementById('confirmBatchUploadBtn').addEventListener('click', async () => {
                 showFeedback('loading', '正在上传...');
+                
+                // 如果有新考试，先创建
                 for (const exam of newExams) {
                     await apiPost('/api/exams', exam);
                 }
-                const result = await apiPost('/api/scores/batch', { scores: scoresToUpload });
-                showFeedback('success', `✅ 成功上传 ${result.count || scoresToUpload.length} 条成绩${newExams.length > 0 ? `，新增 ${newExams.length} 场考试` : ''}`);
+                
+                // 如果有成绩，批量上传
+                let result = { count: 0 };
+                if (scoresToUpload.length > 0) {
+                    result = await apiPost('/api/scores/batch', { scores: scoresToUpload });
+                }
+                
+                let msg = '✅ 上传完成';
+                if (scoresToUpload.length > 0) {
+                    msg += `，${result.count || scoresToUpload.length} 条成绩`;
+                }
+                if (newExams.length > 0) {
+                    msg += `，新增 ${newExams.length} 场考试`;
+                }
+                if (scoresToUpload.length === 0 && newExams.length === 0) {
+                    msg += '，已创建班级和学生信息';
+                }
+                
+                showFeedback('success', msg);
                 document.getElementById('uploadPreview').innerHTML = '';
                 await loadAllData();
                 // 重新初始化教师页面
