@@ -34,7 +34,8 @@
     --biz-border: #E2E8F0;
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow-x: hidden; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif; }
+@media (min-width: 769px) { body { overflow-x: hidden; } }
 
 /* ========== 登录页 ========== */
 .login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--stu-bg); position: relative; }
@@ -173,11 +174,13 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
     .nav-menu a span { font-size: 20px; }
     .nav-menu a.active { border-left: none; border-bottom: 2px solid var(--stu-purple); }
     .biz-sidebar .nav-menu a.active { border-left: none; border-bottom: 2px solid var(--biz-blue); }
-    .student-main, .biz-main { margin-left: 0; margin-bottom: 70px; padding: 12px; }
+    .student-main, .biz-main { margin-left: 0; margin-bottom: 70px; padding: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    .biz-layout { display: block; min-height: 100vh; }
     .top-bar, .biz-top-bar { padding: 12px 16px; margin-bottom: 12px; }
     .chart-container { height: 220px; }
     .data-table { min-width: max-content; width: auto; }
     .table-scroll-wrapper, #uploadPreview > div:last-of-type { overflow-x: auto; display: block; -webkit-overflow-scrolling: touch; }
+    .biz-card { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     .modal-content { width: 95%; max-height: 85vh; margin: 20px; }
 }
 @media (max-width: 576px) {
@@ -1769,7 +1772,7 @@ async function handleScoreUpload(file) {
             });
             html += '</div></div>';
             
-            html += '<div style="overflow-x:auto;max-height:400px;overflow-y:auto;border:1px solid var(--biz-border);border-radius:8px;"><table class="data-table" style="min-width:max-content;"><thead><tr><th>姓名</th><th>班型</th>';
+            html += '<div style="overflow-x:auto;-webkit-overflow-scrolling:touch;max-height:400px;overflow-y:auto;border:1px solid var(--biz-border);border-radius:8px;"><table class="data-table" style="min-width:max-content;"><thead><tr><th>姓名</th><th>班型</th>';
             uniqueExamCols.forEach(c => html += `<th>${c}</th>`);
             html += '<th>状态</th></tr></thead><tbody>';
 
