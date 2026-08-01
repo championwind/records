@@ -290,25 +290,25 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
         <aside class="biz-sidebar">
             <div class="sidebar-logo"><h2>Champion School</h2><p>教师端</p></div>
             <ul class="nav-menu">
-                <li><a class="active" data-page="teacherUpload"><span>📤</span> 成绩上传</a></li>
+                <li><a class="active" data-page="teacherUpload"><span>📤</span> 成绩查询/上传</a></li>
                 <li><a data-page="teacherStudents"><span>👨‍🎓</span> 学生管理</a></li>
                 <li><a data-page="teacherPoints"><span>⭐</span> 积分管理</a></li>
                 <li><a id="teacherLogout"><span>🚪</span> 退出登录</a></li>
             </ul>
         </aside>
         <main class="biz-main">
-            <div class="biz-top-bar"><h2 id="teacherPageTitle">成绩上传</h2><div class="user-info"><span id="teacherNameDisplay">教师</span><div class="user-avatar" style="background:var(--biz-blue);">教</div></div></div>
+            <div class="biz-top-bar"><h2 id="teacherPageTitle">成绩查询/上传</h2><div class="user-info"><span id="teacherNameDisplay">教师</span><div class="user-avatar" style="background:var(--biz-blue);">教</div></div></div>
             <div id="teacherUpload" class="page-content">
-                <div class="biz-card">
-                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">班级成绩总览</h3>
+                <div class="biz-card" style="background: linear-gradient(135deg, rgba(59,130,246,0.04) 0%, rgba(147,51,234,0.04) 100%); border: 1px solid rgba(59,130,246,0.15);">
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">📊 班级成绩总览</h3>
                         <div class="tab-bar" id="classTypeTabs">
                         <!-- 班型选项卡将由 JS 动态生成 -->
                     </div>
                     </div>
-                    <table class="data-table"><thead><tr><th>姓名</th><th>入门测1</th><th>入门测2</th><th>入门测3</th><th>月考1</th><th>平均分</th></tr></thead><tbody id="teacherOverviewBody"></tbody></table>
+                    <table class="data-table"><thead><tr><th>姓名</th><th>入门测1</th><th>入门测2</th><th>入门测3</th><th>月考1</th></tr></thead><tbody id="teacherOverviewBody"></tbody></table>
                 </div>
-                <div class="biz-card">
-                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">上传成绩</h3><span style="font-size:12px;color:var(--biz-text2);">支持 .xlsx / .xls / .csv</span></div>
+                <div class="biz-card" style="background: linear-gradient(135deg, rgba(16,185,129,0.04) 0%, rgba(59,130,246,0.04) 100%); border: 1px solid rgba(16,185,129,0.15); margin-top: 20px;">
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">📤 上传成绩</h3><span style="font-size:12px;color:var(--biz-text2);">支持 .xlsx / .xls / .csv</span></div>
                     <div class="upload-zone" id="scoreUploadZone"><p style="font-size:48px;margin-bottom:12px;">📁</p><p>拖拽Excel文件到此处，或点击上传</p></div>
                     <input type="file" id="scoreFileInput" accept=".xlsx,.xls,.csv" style="display:none;">
                     <div id="uploadPreview" style="margin-top:20px;"></div>
@@ -810,7 +810,7 @@ function showTeacherPage(pageId) {
     document.getElementById(pageId).classList.remove('hidden');
     document.querySelectorAll('#teacherLayout .nav-menu a').forEach(a => a.classList.remove('active'));
     document.querySelector(`#teacherLayout .nav-menu a[data-page="${pageId}"]`)?.classList.add('active');
-    const titles = { teacherUpload: '成绩上传', teacherStudents: '学生管理', teacherPoints: '积分管理' };
+    const titles = { teacherUpload: '成绩查询/上传', teacherStudents: '学生管理', teacherPoints: '积分管理' };
     document.getElementById('teacherPageTitle').textContent = titles[pageId] || '';
     if (pageId === 'teacherStudents') renderTeacherStudents();
     if (pageId === 'teacherPoints') initTeacherPoints();
@@ -1021,27 +1021,22 @@ function renderTeacheroverviewWithFilters() {
         for (const exam of exams) {
             theadHtml += `<th>${exam.name}</th>`;
         }
-        theadHtml += `<th>平均分</th><th>操作</th></tr>`;
+        theadHtml += `</tr>`;
         thead.innerHTML = theadHtml;
 
         if (allDisplayStudents.length === 0 || exams.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="${exams.length + 3}" style="text-align:center;color:var(--biz-text2);padding:30px;">暂无匹配的成绩数据</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="${exams.length + 1}" style="text-align:center;color:var(--biz-text2);padding:30px;">暂无匹配的成绩数据</td></tr>`;
             return;
         }
 
         tbody.innerHTML = '';
         for (const { student, cls } of allDisplayStudents) {
             let html = `<td style="font-weight:600;">${student.name}</td>`;
-            let total = 0, count = 0;
             for (const exam of exams) {
                 const score = allScores.find(s => s.student_id === student.id && s.exam_id === exam.id);
                 const sc = score ? score.score : '-';
-                if (score) { total += score.score; count++; }
                 html += `<td style="font-weight:600;cursor:pointer;" ondblclick="editScore('${student.id}', '${exam.id}', ${score ? score.score : 'null'}, this)" title="双击修改">${sc}</td>`;
             }
-            const avg = count > 0 ? (total / count).toFixed(1) : '-';
-            html += `<td style="font-weight:bold;color:var(--biz-blue);">${avg}</td>`;
-            html += `<td><button class="btn btn-sm btn-blue" onclick="showStudentDetail('${student.id}')">查看</button></td>`;
             const row = document.createElement('tr');
             row.innerHTML = html;
             tbody.appendChild(row);
@@ -1050,7 +1045,7 @@ function renderTeacheroverviewWithFilters() {
     }
 
     // 如果筛选"全部"科目：按学科分行显示
-    let theadHtml = `<tr><th>姓名</th><th>班级</th><th>学科</th><th>最近考试</th><th>分数</th><th>班级排名</th><th>等级</th><th>操作</th></tr>`;
+    let theadHtml = `<tr><th>姓名</th><th>班级</th><th>学科</th><th>最近考试</th><th>分数</th><th>班级排名</th><th>等级</th></tr>`;
     thead.innerHTML = theadHtml;
 
     // 构建学生-学科列表
@@ -1103,7 +1098,6 @@ function renderTeacheroverviewWithFilters() {
         html += `<td style="font-weight:600;cursor:pointer;" ondblclick="editScore('${student.id}', '${latestExam.id}', ${sc}, this)" title="双击修改">${sc}</td>`;
         html += `<td>${rank > 0 ? '第' + rank + '名' : '-'}</td>`;
         html += `<td style="color:${color};font-weight:600;">${level}</td>`;
-        html += `<td><button class="btn btn-sm btn-blue" onclick="showStudentDetail('${student.id}')">查看</button></td>`;
         const tr = document.createElement('tr');
         tr.innerHTML = html;
         tbody.appendChild(tr);
