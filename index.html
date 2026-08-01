@@ -1248,7 +1248,10 @@ function editScore(studentId, examId, currentScore, cell) {
         showFeedback('loading', '保存中...');
         try {
             // 统一用 POST /api/scores（后端自动判断更新或插入）
-            await apiPost('/api/scores', { studentId, examId, score: newScore });
+            // 需要传入 subject，从 exam 中获取
+            const exam = allExams.find(e => e.id === examId);
+            const subjectId = exam ? exam.subject : 'math';
+            await apiPost('/api/scores', { studentId, examId, subject: subjectId, score: newScore });
             
             // 更新本地缓存
             const existing = allScores.find(s => s.student_id === studentId && s.exam_id === examId);
@@ -1818,12 +1821,24 @@ async function handleScoreUpload(file) {
                 // 用电话号码查找学生（优先于姓名）
                 let targetStudent = allStudents.find(s => {
                     const studentPhone = String(s.phone || '').replace(/\D/g, '');
-                    return studentPhone === rowPhone;
+                    return studentPhone === rowPhone && studentPhone.length === 11;
                 });
                 
-                // 如果电话没找到，再用姓名查找（兼容旧数据）
+                let isNewStudent = false;
+                let isSameNameDifferentPerson = false;
+                
+                // 如果电话没找到，再用姓名查找
                 if (!targetStudent) {
-                    targetStudent = allStudents.find(s => s.name === name);
+                    const sameNameStudent = allStudents.find(s => s.name === name);
+                    if (sameNameStudent) {
+                        const studentPhone = String(sameNameStudent.phone || '').replace(/\D/g, '');
+                        // 同名但电话不同 = 不同的人
+                        if (studentPhone !== rowPhone) {
+                            isSameNameDifferentPerson = true;
+                        } else {
+                            targetStudent = sameNameStudent;
+                        }
+                    }
                 }
                 
                 let targetClassId = null;
@@ -1867,7 +1882,7 @@ async function handleScoreUpload(file) {
                 }
                 
                 // 学生不存在则创建（密码 = 电话末6位）
-                if (!targetStudent) {
+                if (!targetStudent || isSameNameDifferentPerson) {
                     try {
                         const newId = 's' + Date.now().toString().slice(-6) + Math.floor(Math.random()*100);
                         const newAccount = name.toLowerCase().replace(/\s/g, '').replace(/[^a-z]/g, '');
@@ -1890,6 +1905,7 @@ async function handleScoreUpload(file) {
                         } else {
                             await loadAllData();
                             targetStudent = allStudents.find(s => s.phone === rowPhone);
+                            isNewStudent = true;
                             showFeedback('success', `✅ 已创建新学生：${name}，初始密码：${initPassword}`);
                             html += `<tr><td style="font-weight:600;">${name}</td><td>${rowClassType || '-'}</td>`;
                         }
