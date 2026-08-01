@@ -1247,15 +1247,14 @@ function editScore(studentId, examId, currentScore, cell) {
         }
         showFeedback('loading', '保存中...');
         try {
-            // 先查找是否已有成绩记录
+            // 统一用 POST /api/scores（后端自动判断更新或插入）
+            await apiPost('/api/scores', { studentId, examId, score: newScore });
+            
+            // 更新本地缓存
             const existing = allScores.find(s => s.student_id === studentId && s.exam_id === examId);
             if (existing) {
-                // 更新已有成绩
-                await apiPut('/api/scores/' + existing.id, { score: newScore });
                 existing.score = newScore;
             } else {
-                // 新建成绩
-                await apiPost('/api/scores', { studentId, examId, score: newScore });
                 await loadAllData();
             }
             showFeedback('success', '成绩已更新');
