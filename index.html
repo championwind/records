@@ -639,7 +639,6 @@ async function initStudentDashboard() {
     document.getElementById('pointsCard').onclick = () => showStudentPage('studentPoints');
 
     // 根据学生班级自动推断默认科目
-    const cls = getClass(user.class_id);
     if (cls) {
         const ct = allClassTypes.find(t => t.id === cls.class_type_id);
         if (ct && ct.subject) {
