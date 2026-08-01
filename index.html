@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Champion School 成绩管理系统 v4.0</title>
+    <style>
+/* Champion School 成绩管理系统 v4.0 - 多科目全局样式 */
+:root {
+    --stu-bg: #0B0B14;
+    --stu-card: #14142B;
+    --stu-card2: #1A1A3A;
+    --stu-purple: #8B5CF6;
+    --stu-light-purple: #A78BFA;
+    --stu-pale-purple: #C4B5FD;
+    --stu-green: #10B981;
+    --stu-red: #EF4444;
+    --stu-amber: #F59E0B;
+    --stu-blue: #3B82F6;
+    --stu-cyan: #06B6D4;
+    --stu-text: #E2E8F0;
+    --stu-text2: #94A3B8;
+    --stu-text3: #64748B;
+    --biz-bg: #F8FAFC;
+    --biz-card: #FFFFFF;
+    --biz-blue: #3B82F6;
+    --biz-dark-blue: #1D4ED8;
+    --biz-light-blue: #60A5FA;
+    --biz-green: #22C55E;
+    --biz-red: #DC2626;
+    --biz-amber: #EAB308;
+    --biz-text: #1E293B;
+    --biz-text2: #64748B;
+    --biz-border: #E2E8F0;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow-x: hidden; }
+
+/* ========== 登录页 ========== */
+.login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--stu-bg); position: relative; }
+.login-page::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--stu-purple), var(--stu-light-purple)); }
+.login-box { width: 420px; padding: 40px; background: var(--stu-card); border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.3); box-shadow: 0 0 40px rgba(139, 92, 246, 0.15); }
+.login-logo { text-align: center; margin-bottom: 30px; }
+.login-logo h1 { font-size: 28px; color: var(--stu-purple); margin-bottom: 8px; }
+.login-logo p { font-size: 14px; color: var(--stu-text2); }
+.role-selector { display: flex; gap: 10px; margin-bottom: 24px; }
+.role-btn { flex: 1; padding: 10px; border: 1px solid rgba(139, 92, 246, 0.3); background: transparent; color: var(--stu-text2); border-radius: 8px; cursor: pointer; transition: all 0.3s; font-size: 14px; }
+.role-btn:hover, .role-btn.active { background: var(--stu-purple); color: white; border-color: var(--stu-purple); }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; color: var(--stu-text); font-size: 14px; }
+.form-group input { width: 100%; padding: 12px 16px; background: var(--stu-bg); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 8px; color: var(--stu-text); font-size: 14px; transition: all 0.3s; }
+.form-group input:focus { outline: none; border-color: var(--stu-purple); box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2); }
+.btn-primary { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--stu-purple), var(--stu-light-purple)); border: none; border-radius: 8px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4); }
+
+/* ========== 学生端布局 ========== */
+.student-layout { min-height: 100vh; background: var(--stu-bg); display: flex; }
+.student-sidebar { width: 240px; background: var(--stu-card); border-right: 1px solid rgba(139, 92, 246, 0.2); padding: 20px 0; position: fixed; height: 100vh; overflow-y: auto; }
+.sidebar-logo { text-align: center; padding: 0 20px 20px; border-bottom: 1px solid rgba(139, 92, 246, 0.2); margin-bottom: 20px; }
+.sidebar-logo h2 { font-size: 18px; color: var(--stu-purple); }
+.sidebar-logo p { font-size: 12px; color: var(--stu-text2); margin-top: 4px; }
+.nav-menu { list-style: none; padding: 0 12px; }
+.nav-menu li { margin-bottom: 4px; }
+.nav-menu a { display: flex; align-items: center; gap: 12px; padding: 12px 16px; color: var(--stu-text2); text-decoration: none; border-radius: 8px; transition: all 0.3s; font-size: 14px; cursor: pointer; }
+.nav-menu a:hover, .nav-menu a.active { background: rgba(139, 92, 246, 0.15); color: var(--stu-light-purple); }
+.nav-menu a.active { border-left: 3px solid var(--stu-purple); }
+.student-main { flex: 1; margin-left: 240px; padding: 20px; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--stu-card); border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(139, 92, 246, 0.2); }
+.top-bar h2 { color: var(--stu-text); font-size: 18px; }
+.user-info { display: flex; align-items: center; gap: 12px; color: var(--stu-text2); font-size: 14px; }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--stu-purple); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+
+/* ========== 卡片样式 ========== */
+.card { background: var(--stu-card); border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2); padding: 20px; margin-bottom: 20px; }
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+.card-title { color: var(--stu-text); font-size: 16px; font-weight: 600; }
+
+/* ========== 科目选择按钮 ========== */
+.subject-selector { margin-bottom: 16px; }
+.subject-selector-title { color: var(--stu-light-purple); font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+.subject-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 10px 14px; margin-bottom: 8px; border-radius: 8px; border: 1px solid rgba(139, 92, 246, 0.3); background: var(--stu-card2); color: var(--stu-text2); cursor: pointer; transition: all 0.3s; font-size: 13px; }
+.subject-btn:hover { border-color: var(--stu-purple); }
+.subject-btn.active { border-color: var(--stu-purple); font-weight: 600; }
+.subject-btn .subject-indicator { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
+.subject-btn.active .subject-status { color: white; font-size: 11px; }
+.subject-btn:not(.active) .subject-status { color: var(--stu-text3); font-size: 11px; }
+
+/* ========== 三科对比卡片 ========== */
+.subject-compare-card { display: flex; flex-direction: column; gap: 12px; }
+.compare-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-radius: 10px; background: var(--stu-card2); border: 1px solid rgba(139, 92, 246, 0.15); }
+.compare-subject { font-weight: 600; font-size: 14px; }
+.compare-score { font-size: 20px; font-weight: bold; }
+.compare-rank { font-size: 12px; color: var(--stu-text2); }
+
+/* ========== 教师/教务/校长端布局 ========== */
+.biz-layout { min-height: 100vh; background: var(--biz-bg); display: flex; }
+.biz-sidebar { width: 240px; background: var(--biz-card); border-right: 1px solid var(--biz-border); padding: 20px 0; position: fixed; height: 100vh; overflow-y: auto; box-shadow: 2px 0 8px rgba(0,0,0,0.05); }
+.biz-sidebar .sidebar-logo { border-bottom: 1px solid var(--biz-border); }
+.biz-sidebar .sidebar-logo h2 { color: var(--biz-blue); }
+.biz-sidebar .nav-menu a:hover, .biz-sidebar .nav-menu a.active { background: rgba(59, 130, 246, 0.1); color: var(--biz-blue); }
+.biz-sidebar .nav-menu a.active { border-left: 3px solid var(--biz-blue); }
+.biz-main { flex: 1; margin-left: 240px; padding: 24px; }
+.biz-top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--biz-card); border-radius: 8px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.biz-card { background: var(--biz-card); border-radius: 8px; border: 1px solid var(--biz-border); padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+
+/* ========== 表格样式 ========== */
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.data-table th { padding: 12px 16px; text-align: left; font-weight: 600; font-size: 13px; border-bottom: 1px solid rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.08); color: var(--stu-light-purple); }
+.biz-layout .data-table th { background: rgba(59, 130, 246, 0.08); color: var(--biz-blue); border-bottom: 1px solid var(--biz-border); }
+.data-table td { padding: 12px 16px; color: var(--stu-text); border-bottom: 1px solid rgba(139, 92, 246, 0.08); }
+.biz-layout .data-table td { color: var(--biz-text); border-bottom: 1px solid var(--biz-border); }
+.data-table tr:hover td { background: rgba(139, 92, 246, 0.04); }
+.biz-layout .data-table tr:hover td { background: rgba(59, 130, 246, 0.04); }
+
+/* ========== 按钮样式 ========== */
+.btn { padding: 8px 16px; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.3s; border: none; display: inline-flex; align-items: center; gap: 6px; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+.btn-purple { background: var(--stu-purple); color: white; }
+.btn-purple:hover { background: var(--stu-light-purple); transform: translateY(-1px); }
+.btn-blue { background: var(--biz-blue); color: white; }
+.btn-blue:hover { background: var(--biz-dark-blue); }
+.btn-green { background: var(--stu-green); color: white; }
+.btn-red { background: var(--stu-red); color: white; }
+.btn-outline { background: transparent; border: 1px solid var(--stu-purple); color: var(--stu-purple); }
+.biz-layout .btn-outline { border-color: var(--biz-blue); color: var(--biz-blue); }
+
+/* ========== 弹窗样式 ========== */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s; }
+.modal-overlay.show { opacity: 1; visibility: visible; }
+.modal-content { background: var(--stu-card); border-radius: 16px; border: 1px solid rgba(139, 92, 246, 0.3); width: 90%; max-width: 600px; max-height: 80vh; overflow-y: auto; transform: scale(0.9); transition: all 0.3s; }
+.biz-layout .modal-content { background: var(--biz-card); border: 1px solid var(--biz-border); }
+.modal-overlay.show .modal-content { transform: scale(1); }
+.modal-header { padding: 20px 24px; border-bottom: 1px solid rgba(139, 92, 246, 0.2); display: flex; justify-content: space-between; align-items: center; }
+.modal-header h3 { color: var(--stu-text); font-size: 18px; }
+.modal-close { background: none; border: none; color: var(--stu-text2); font-size: 24px; cursor: pointer; }
+.modal-body { padding: 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid rgba(139, 92, 246, 0.2); display: flex; justify-content: flex-end; gap: 12px; }
+
+/* ========== 反馈提示 ========== */
+.feedback-toast { position: fixed; top: 24px; right: 24px; padding: 16px 24px; border-radius: 8px; color: white; font-size: 14px; display: flex; align-items: center; gap: 10px; z-index: 2000; transform: translateX(120%); transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+.feedback-toast.show { transform: translateX(0); }
+.feedback-toast.success { background: var(--stu-green); }
+.feedback-toast.error { background: var(--stu-red); }
+.feedback-toast.loading { background: var(--stu-purple); }
+
+.spinner { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.chart-container { width: 100%; height: 300px; position: relative; }
+
+.tab-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.tab-btn { padding: 8px 20px; border-radius: 6px; border: 1px solid rgba(139, 92, 246, 0.3); background: transparent; color: var(--stu-text2); cursor: pointer; transition: all 0.3s; font-size: 14px; }
+.tab-btn.active { background: var(--stu-purple); color: white; border-color: var(--stu-purple); }
+.biz-layout .tab-btn { border-color: var(--biz-border); color: var(--biz-text2); }
+.biz-layout .tab-btn.active { background: var(--biz-blue); border-color: var(--biz-blue); color: white; }
+
+.upload-zone { border: 2px dashed rgba(139, 92, 246, 0.4); border-radius: 12px; padding: 40px; text-align: center; color: var(--stu-text2); transition: all 0.3s; cursor: pointer; }
+.upload-zone:hover, .upload-zone.dragover { border-color: var(--stu-purple); background: rgba(139, 92, 246, 0.05); }
+
+.hidden { display: none !important; }
+
+/* ========== 响应式 ========== */
+@media (max-width: 1024px) { .student-sidebar, .biz-sidebar { width: 200px; } .student-main { margin-left: 200px; } .biz-main { margin-left: 200px; } }
+@media (max-width: 768px) {
+    .login-box { width: 92%; margin: 20px auto; padding: 24px; }
+    .role-btn { flex: 1 1 45%; padding: 10px 8px; font-size: 13px; }
+    .student-sidebar, .biz-sidebar { position: fixed; bottom: 0; left: 0; right: 0; top: auto; width: 100%; height: 60px; border-right: none; border-top: 1px solid rgba(139, 92, 246, 0.2); z-index: 100; padding: 0; display: flex; align-items: center; justify-content: center; }
+    .biz-sidebar { border-top: 1px solid var(--biz-border); }
+    .sidebar-logo { display: none; }
+    .nav-menu { display: flex; justify-content: space-around; width: 100%; padding: 0 8px; gap: 0; }
+    .nav-menu li { margin: 0; flex: 1; }
+    .nav-menu a { flex-direction: column; padding: 8px 4px; font-size: 11px; gap: 4px; text-align: center; }
+    .nav-menu a span { font-size: 20px; }
+    .nav-menu a.active { border-left: none; border-bottom: 2px solid var(--stu-purple); }
+    .biz-sidebar .nav-menu a.active { border-left: none; border-bottom: 2px solid var(--biz-blue); }
+    .student-main, .biz-main { margin-left: 0; margin-bottom: 70px; padding: 12px; }
+    .top-bar, .biz-top-bar { padding: 12px 16px; margin-bottom: 12px; }
+    .chart-container { height: 220px; }
+    .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+    .modal-content { width: 95%; max-height: 85vh; margin: 20px; }
+}
+@media (max-width: 576px) {
+    .login-box { padding: 20px 16px; }
+    .login-logo h1 { font-size: 20px; }
+    .chart-container { height: 180px; }
+    .data-table th, .data-table td { padding: 8px 10px; font-size: 13px; }
+    .feedback-toast { top: auto; bottom: 80px; right: 12px; left: 12px; transform: translateY(120%); }
+    .feedback-toast.show { transform: translateY(0); }
+}
+</style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <!-- ========== 登录页 ========== -->
+    <div id="loginPage" class="login-page">
+        <div class="login-box">
+            <div class="login-logo">
+                <h1>Champion School</h1>
+                <p>成绩管理系统 v4.0</p>
+            </div>
+            <div class="role-selector">
+                <button class="role-btn active" data-role="student">学生端</button>
+                <button class="role-btn" data-role="teacher">教师端</button>
+                <button class="role-btn" data-role="admin">教务端</button>
+                <button class="role-btn" data-role="principal">校长端</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>账号</label>
+                    <input type="text" id="loginAccount" placeholder="请输入账号" required>
+                </div>
+                <div class="form-group">
+                    <label>密码</label>
+                    <input type="password" id="loginPassword" placeholder="请输入密码" required>
+                </div>
+                <button type="submit" class="btn-primary">登录</button>
+            </form>
+            <div style="margin-top: 16px; text-align: center; font-size: 12px; color: var(--stu-text3);">
+                <p>学生账号：姓名全拼 | 初始密码：1234</p>
+                <p style="margin-top: 4px;">教师/教务/校长账号由管理员分配</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 学生端（简化版 - 仅保留核心功能） ========== -->
+    <div id="studentLayout" class="student-layout hidden">
+        <aside class="student-sidebar">
+            <div class="sidebar-logo"><h2>Champion School</h2><p>学生端</p></div>
+            <ul class="nav-menu">
+                <li><a class="active" data-page="studentDashboard"><span>📊</span> 成绩看板</a></li>
+                <li><a data-page="studentPoints"><span>⭐</span> 积分中心</a></li>
+                <li><a data-page="studentHomework"><span>📝</span> 本周作业</a></li>
+                <li><a id="studentLogout"><span>🚪</span> 退出登录</a></li>
+            </ul>
+        </aside>
+        <main class="student-main">
+            <div class="top-bar">
+                <h2 id="studentPageTitle">成绩看板</h2>
+                <div class="user-info"><span id="studentNameDisplay">学生</span><div class="user-avatar" id="studentAvatar">学</div></div>
+            </div>
+            <div id="studentDashboard" class="page-content">
+                <div style="display: grid; grid-template-columns: 260px 1fr 200px; gap: 20px;">
+                    <div class="card" style="grid-row: span 2;">
+                        <div style="text-align:center;margin-bottom:20px;">
+                            <div style="width:80px;height:80px;border-radius:50%;background:var(--stu-purple);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:32px;color:#fff;font-weight:bold;" id="stuInfoAvatar">学</div>
+                            <h3 style="color:var(--stu-text);font-size:20px;" id="stuInfoName">姓名</h3>
+                            <p style="color:var(--stu-text2);font-size:14px;" id="stuInfoClass">班级</p>
+                        </div>
+                        <div style="border-top:1px solid rgba(139,92,246,0.2);padding-top:16px;">
+                            <p class="subject-selector-title">选择科目</p>
+                            <div id="subjectSelector"></div>
+                        </div>
+                        <div style="border-top:1px solid rgba(139,92,246,0.2);padding-top:16px;margin-top:16px;">
+                            <p style="color:var(--stu-light-purple);font-size:13px;font-weight:600;margin-bottom:10px;">积分中心</p>
+                            <div id="pointsCard" style="background:linear-gradient(135deg,var(--stu-purple),var(--stu-light-purple));border-radius:12px;padding:16px;cursor:pointer;transition:all 0.3s;">
+                                <p style="color:rgba(255,255,255,0.8);font-size:12px;">当前总积分</p>
+                                <p style="color:#fff;font-size:28px;font-weight:bold;margin-top:4px;" id="stuTotalPoints">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title" id="myScoresTitle">我的成绩</h3><span style="color:var(--stu-text3);font-size:12px;" id="currentExamLabel"></span></div>
+                        <table class="data-table"><thead><tr><th>考试</th><th>日期</th><th>分数</th><th>班级排名</th><th>等级</th></tr></thead><tbody id="myScoresBody"></tbody></table>
+                    </div>
+                    <div class="card" style="grid-row:span 2;">
+                        <div class="card-header"><h3 class="card-title">三科对比</h3></div>
+                        <div class="subject-compare-card" id="subjectCompare"></div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header"><h3 class="card-title">分数段统计</h3></div>
+                        <div class="chart-container" style="height:200px;"><canvas id="scoreSegmentChart"></canvas></div>
+                    </div>
+                        <div class="card" style="grid-column: span 2;">
+                        <div class="card-header"><h3 class="card-title">📈 排名波动趋势</h3></div>
+                        <div class="chart-container" style="height:220px;"><canvas id="rankTrendChart"></canvas></div>
+                    </div>
+            </div>
+            <div id="studentPoints" class="page-content hidden">
+                <div class="card"><div class="card-header"><h3 class="card-title">积分明细</h3><span style="color:var(--stu-purple);font-size:24px;font-weight:bold;" id="pointsDetailTotal">0分</span></div>
+                <table class="data-table"><thead><tr><th>时间</th><th>事件</th><th>变动</th></tr></thead><tbody id="pointsTableBody"></tbody></table></div>
+            </div>
+            <div id="studentHomework" class="page-content hidden"><div class="card"><p style="color:var(--stu-text2);text-align:center;padding:20px;">暂无作业</p></div></div>
+        </main>
+    </div>
+
+    <!-- ========== 教师端（简化版） ========== -->
+    <div id="teacherLayout" class="biz-layout hidden">
+        <aside class="biz-sidebar">
+            <div class="sidebar-logo"><h2>Champion School</h2><p>教师端</p></div>
+            <ul class="nav-menu">
+                <li><a class="active" data-page="teacherUpload"><span>📤</span> 成绩上传</a></li>
+                <li><a data-page="teacherStudents"><span>👨‍🎓</span> 学生管理</a></li>
+                <li><a data-page="teacherPoints"><span>⭐</span> 积分管理</a></li>
+                <li><a id="teacherLogout"><span>🚪</span> 退出登录</a></li>
+            </ul>
+        </aside>
+        <main class="biz-main">
+            <div class="biz-top-bar"><h2 id="teacherPageTitle">成绩上传</h2><div class="user-info"><span id="teacherNameDisplay">教师</span><div class="user-avatar" style="background:var(--biz-blue);">教</div></div></div>
+            <div id="teacherUpload" class="page-content">
+                <div class="biz-card">
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">班级成绩总览</h3>
+                        <div class="tab-bar" id="classTypeTabs">
+                        <!-- 班型选项卡将由 JS 动态生成 -->
+                    </div>
+                    </div>
+                    <table class="data-table"><thead><tr><th>姓名</th><th>入门测1</th><th>入门测2</th><th>入门测3</th><th>月考1</th><th>平均分</th></tr></thead><tbody id="teacherOverviewBody"></tbody></table>
+                </div>
+                <div class="biz-card">
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">上传成绩</h3><span style="font-size:12px;color:var(--biz-text2);">支持 .xlsx / .xls / .csv</span></div>
+                    <div class="upload-zone" id="scoreUploadZone"><p style="font-size:48px;margin-bottom:12px;">📁</p><p>拖拽Excel文件到此处，或点击上传</p></div>
+                    <input type="file" id="scoreFileInput" accept=".xlsx,.xls,.csv" style="display:none;">
+                    <div id="uploadPreview" style="margin-top:20px;"></div>
+                </div>
+            </div>
+            <div id="teacherStudents" class="page-content hidden">
+                <div class="biz-card">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                        <h3 class="card-title" style="color:var(--biz-text);">学生管理</h3>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-red" id="teacherBatchDeleteBtn" style="display:none;">🗑️ 批量删除</button>
+                            <button class="btn btn-blue" id="teacherAddStudentBtn">+ 添加学生</button>
+                        </div>
+                    </div>
+                    <table class="data-table"><thead><tr><th><input type="checkbox" id="teacherSelectAll" style="cursor:pointer;"></th><th>姓名</th><th>账号</th><th>班级</th><th>手机号</th><th>操作</th></tr></thead><tbody id="teacherStudentsBody"></tbody></table>
+                </div>
+            </div>
+            <div id="teacherPoints" class="page-content hidden">
+                <div class="biz-card">
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">积分管理</h3></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end;">
+                        <div><label style="display:block;margin-bottom:4px;font-size:13px;color:var(--biz-text2);">学生</label><select id="pointStudentSelect" style="width:100%;padding:8px;border:1px solid var(--biz-border);border-radius:6px;"></select></div>
+                        <div><label style="display:block;margin-bottom:4px;font-size:13px;color:var(--biz-text2);">事件</label><select id="pointEventSelect" style="width:100%;padding:8px;border:1px solid var(--biz-border);border-radius:6px;"><option value="缺课">缺课 (-5分)</option><option value="未交作业">未交作业 (-3分)</option><option value="作业未完成">作业未完成 (-2分)</option><option value="手动加分">手动加分</option><option value="手动减分">手动减分</option></select></div>
+                        <div><label style="display:block;margin-bottom:4px;font-size:13px;color:var(--biz-text2);">分值</label><input type="number" id="pointValue" value="-5" style="width:100%;padding:8px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+                        <button class="btn btn-blue" id="addPointBtn">确认</button>
+                    </div>
+                </div>
+                <div class="biz-card"><h3 style="color:var(--biz-text);margin-bottom:16px;font-size:16px;">班级积分总览</h3>
+                    <table class="data-table"><thead><tr><th>姓名</th><th>积分</th><th>操作</th></tr></thead><tbody id="teacherPointsBody"></tbody></table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== 教务端（简化版） ========== -->
+    <div id="adminLayout" class="biz-layout hidden">
+        <aside class="biz-sidebar">
+            <div class="sidebar-logo"><h2>Champion School</h2><p>教务端</p></div>
+            <ul class="nav-menu">
+                <li><a class="active" data-page="adminStudents"><span>👨‍🎓</span> 学生管理</a></li>
+                <li><a data-page="adminQuery"><span>🔍</span> 成绩查询</a></li>
+                <li><a id="adminLogout"><span>🚪</span> 退出登录</a></li>
+            </ul>
+        </aside>
+        <main class="biz-main">
+            <div class="biz-top-bar"><h2 id="adminPageTitle">学生管理</h2><div class="user-info"><span id="adminNameDisplay">教务</span><div class="user-avatar" style="background:var(--biz-blue);">教</div></div></div>
+            <div id="adminStudents" class="page-content">
+                <div class="biz-card">
+                    <div class="card-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                        <h3 class="card-title" style="color:var(--biz-text);">学生列表</h3>
+                        <div style="display:flex;gap:10px;">
+                            <button class="btn btn-red" id="adminBatchDeleteBtn" style="display:none;">🗑️ 批量删除</button>
+                            <button class="btn btn-red" id="adminDeleteClassBtn">🗑️ 删除班级</button>
+                            <button class="btn btn-blue" id="addStudentBtn">+ 添加学生</button>
+                        </div>
+                    </div>
+                    <table class="data-table"><thead><tr><th><input type="checkbox" id="adminSelectAll" style="cursor:pointer;"></th><th>姓名</th><th>账号</th><th>班级</th><th>手机号</th><th>操作</th></tr></thead><tbody id="adminStudentsBody"></tbody></table>
+                </div>
+            </div>
+            <div id="adminQuery" class="page-content hidden">
+                <div class="biz-card">
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">成绩查询</h3></div>
+                    <table class="data-table"><thead><tr><th>姓名</th><th>分数</th><th>排名</th><th>等级</th></tr></thead><tbody id="adminQueryBody"></tbody></table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== 校长端（简化版） ========== -->
+    <div id="principalLayout" class="biz-layout hidden">
+        <aside class="biz-sidebar">
+            <div class="sidebar-logo"><h2>Champion School</h2><p>校长端</p></div>
+            <ul class="nav-menu">
+                <li><a class="active" data-page="principalUsers"><span>👥</span> 账户管理</a></li>
+                <li><a data-page="principalStats"><span>📈</span> 数据监控</a></li>
+                <li><a id="principalLogout"><span>🚪</span> 退出登录</a></li>
+            </ul>
+        </aside>
+        <main class="biz-main">
+            <div class="biz-top-bar"><h2 id="principalPageTitle">账户管理</h2><div class="user-info"><span id="principalNameDisplay">校长</span><div class="user-avatar" style="background:var(--biz-blue);">校</div></div></div>
+            <div id="principalUsers" class="page-content">
+                <div class="biz-card">
+                    <div class="card-header"><h3 class="card-title" style="color:var(--biz-text);">全部用户</h3><button class="btn btn-blue" id="addUserBtn">+ 添加账户</button></div>
+                    <table class="data-table"><thead><tr><th>账号</th><th>姓名</th><th>角色</th><th>操作</th></tr></thead><tbody id="principalUsersBody"></tbody></table>
+                </div>
+            </div>
+            <div id="principalStats" class="page-content hidden">
+                <div class="biz-card"><h3 style="color:var(--biz-text);margin-bottom:16px;">全校数据概览</h3>
+                    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
+                        <div style="background:rgba(59,130,246,0.1);padding:20px;border-radius:8px;text-align:center;"><p style="font-size:32px;font-weight:bold;color:var(--biz-blue);" id="statTotalStudents">0</p><p style="color:var(--biz-text2);font-size:14px;">学生总数</p></div>
+                        <div style="background:rgba(16,185,129,0.1);padding:20px;border-radius:8px;text-align:center;"><p style="font-size:32px;font-weight:bold;color:var(--biz-green);" id="statTotalTeachers">0</p><p style="color:var(--biz-text2);font-size:14px;">教师总数</p></div>
+                        <div style="background:rgba(245,158,11,0.1);padding:20px;border-radius:8px;text-align:center;"><p style="font-size:32px;font-weight:bold;color:var(--biz-amber);" id="statTotalExams">0</p><p style="color:var(--biz-text2);font-size:14px;">考试次数</p></div>
+                        <div style="background:rgba(139,92,246,0.1);padding:20px;border-radius:8px;text-align:center;"><p style="font-size:32px;font-weight:bold;color:var(--stu-purple);" id="statAvgScore">0</p><p style="color:var(--biz-text2);font-size:14px;">平均成绩</p></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ========== 弹窗组件 ========== -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header"><h3 id="modalTitle">标题</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer" id="modalFooter"></div>
+        </div>
+    </div>
+
+    <!-- ========== 反馈提示 ========== -->
+    <div id="feedbackToast" class="feedback-toast"><span id="feedbackIcon"></span><span id="feedbackMessage"></span></div>
+
+    <script>
+// ============================================================
+// Champion School v4.0 - 前后端完整连接版
+// 所有数据通过 API 读写，多人共享数据库
+// ============================================================
+
+const API_BASE = '';
+let currentUser = null;
+let currentRole = 'student';
+let currentSubject = 'math';
+let allStudents = [];
+let allScores = [];
+let allExams = [];
+let allUsers = [];
+let allClasses = [];
+let allSubjects = [];
+let allClassTypes = [];
+let charts = {};
+
+// ========== API 调用函数 ==========
+async function apiGet(url) {
+    const res = await fetch(API_BASE + url);
+    if (!res.ok) throw new Error('请求失败');
+    return res.json();
+}
+
+async function apiPost(url, data) {
+    const res = await fetch(API_BASE + url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('请求失败');
+    return res.json();
+}
+
+async function apiPut(url, data) {
+    const res = await fetch(API_BASE + url, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('请求失败');
+    return res.json();
+}
+
+async function apiDelete(url) {
+    const res = await fetch(API_BASE + url, { method: 'DELETE' });
+    if (!res.ok) throw new Error('请求失败');
+    return res.json();
+}
+
+// ========== 加载所有数据 ==========
+async function loadAllData() {
+    try {
+        allUsers = await apiGet('/api/users');
+        allStudents = allUsers.filter(u => u.role === 'student');
+        allScores = await apiGet('/api/scores');
+        allExams = await apiGet('/api/exams');
+        allClasses = await apiGet('/api/classes');
+        allSubjects = await apiGet('/api/subjects');
+        allClassTypes = await apiGet('/api/class-types');
+        return true;
+    } catch (e) {
+        console.error('加载数据失败:', e);
+        showFeedback('error', '加载数据失败，请确保服务器已启动');
+        return false;
+    }
+}
+
+function getUser(id) { return allUsers.find(u => u.id === id); }
+function getStudent(id) { return allStudents.find(s => s.id === id); }
+function getExam(id) { return allExams.find(e => e.id === id); }
+function getSubject(id) { return allSubjects.find(s => s.id === id); }
+function getClass(id) { return allClasses.find(c => c.id === id); }
+function getScores(studentId) { return allScores.filter(s => s.student_id === studentId); }
+function getExamScores(examId) { return allScores.filter(s => s.exam_id === examId); }
+function getClassExamScores(examId, classId) {
+    // 获取同班学生在某场考试中的成绩（用于本班排名）
+    const cls = getClass(classId);
+    if (!cls) return getExamScores(examId);
+    const classStudentIds = new Set(cls.student_ids ? JSON.parse(cls.student_ids) : []);
+    return allScores.filter(s => s.exam_id === examId && classStudentIds.has(s.student_id));
+}
+function getTotalPoints(studentId) {
+    const pts = allPoints.filter(p => p.student_id === studentId);
+    return pts.reduce((sum, p) => sum + p.value, 0);
+}
+
+// ========== 登录 ==========
+document.addEventListener('DOMContentLoaded', () => {
+    // 自动恢复登录状态
+    const saved = localStorage.getItem('currentUser');
+    if (saved) {
+        try {
+            currentUser = JSON.parse(saved);
+            loadAllData().then(() => showLayout(currentUser.role));
+        } catch (e) {
+            localStorage.removeItem('currentUser');
+        }
+    }
+
+    document.querySelectorAll('.role-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentRole = btn.dataset.role;
+        });
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const account = document.getElementById('loginAccount').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        try {
+            const result = await apiPost('/api/login', { account, password });
+            if (result.success) {
+                currentUser = result.user;
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                showFeedback('success', '登录成功');
+                await loadAllData();
+                setTimeout(() => showLayout(currentUser.role), 300);
+            } else {
+                showFeedback('error', '账号或密码错误');
+            }
+        } catch (err) {
+            showFeedback('error', '登录失败: ' + err.message);
+        }
+    });
+
+    initNavigation();
+    initModals();
+    initUploadZones();
+});
+
+// ========== 显示布局 ==========
+function showLayout(role) {
+    document.getElementById('loginPage').classList.add('hidden');
+    ['studentLayout', 'teacherLayout', 'adminLayout', 'principalLayout'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
+    const map = { student: 'studentLayout', teacher: 'teacherLayout', admin: 'adminLayout', principal: 'principalLayout' };
+    document.getElementById(map[role]).classList.remove('hidden');
+
+    if (role === 'student') initStudentDashboard();
+    else if (role === 'teacher') initTeacherPage();
+    else if (role === 'admin') initAdminPage();
+    else if (role === 'principal') initPrincipalPage();
+}
+
+// ========== 导航 ==========
+function initNavigation() {
+    document.querySelectorAll('.student-sidebar .nav-menu a[data-page]').forEach(a => {
+        a.addEventListener('click', (e) => { e.preventDefault(); showStudentPage(a.dataset.page); });
+    });
+    document.querySelectorAll('#teacherLayout .nav-menu a[data-page]').forEach(a => {
+        a.addEventListener('click', (e) => { e.preventDefault(); showTeacherPage(a.dataset.page); });
+    });
+    document.querySelectorAll('#adminLayout .nav-menu a[data-page]').forEach(a => {
+        a.addEventListener('click', (e) => { e.preventDefault(); showAdminPage(a.dataset.page); });
+    });
+    document.querySelectorAll('#principalLayout .nav-menu a[data-page]').forEach(a => {
+        a.addEventListener('click', (e) => { e.preventDefault(); showPrincipalPage(a.dataset.page); });
+    });
+
+    document.getElementById('studentLogout').addEventListener('click', logout);
+    document.getElementById('teacherLogout').addEventListener('click', logout);
+    document.getElementById('adminLogout').addEventListener('click', logout);
+    document.getElementById('principalLogout').addEventListener('click', logout);
+}
+
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    document.getElementById('loginPage').classList.remove('hidden');
+    ['studentLayout', 'teacherLayout', 'adminLayout', 'principalLayout'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+    });
+    Object.values(charts).forEach(c => c && c.destroy && c.destroy());
+    charts = {};
+    showFeedback('success', '已退出');
+}
+
+// ========== 学生端 ==========
+function showStudentPage(pageId) {
+    document.querySelectorAll('#studentLayout .page-content').forEach(p => p.classList.add('hidden'));
+    document.getElementById(pageId).classList.remove('hidden');
+    document.querySelectorAll('.student-sidebar .nav-menu a').forEach(a => a.classList.remove('active'));
+    document.querySelector(`.student-sidebar .nav-menu a[data-page="${pageId}"]`)?.classList.add('active');
+    const titles = { studentDashboard: '成绩看板', studentPoints: '积分中心', studentHomework: '本周作业' };
+    document.getElementById('studentPageTitle').textContent = titles[pageId] || '';
+    if (pageId === 'studentPoints') initStudentPoints();
+    if (pageId === 'studentDashboard') initStudentDashboard();
+}
+
+async function initStudentDashboard() {
+    if (!currentUser) return;
+    const user = currentUser;
+    document.getElementById('studentNameDisplay').textContent = user.name;
+    document.getElementById('studentAvatar').textContent = user.name[0];
+    document.getElementById('stuInfoName').textContent = user.name;
+    document.getElementById('stuInfoAvatar').textContent = user.name[0];
+    const cls = getClass(user.class_id);
+    document.getElementById('stuInfoClass').textContent = cls ? `${cls.grade} · ${cls.name}` : '';
+
+    // 积分
+    const points = await apiGet('/api/points/' + user.id);
+    window._allPoints = points;
+    const total = points.reduce((s, p) => s + p.value, 0);
+    document.getElementById('stuTotalPoints').textContent = total;
+    document.getElementById('pointsCard').onclick = () => showStudentPage('studentPoints');
+
+    // 科目选择
+    const selector = document.getElementById('subjectSelector');
+    selector.innerHTML = '';
+    allSubjects.forEach(subj => {
+        const btn = document.createElement('button');
+        btn.className = 'subject-btn' + (subj.id === currentSubject ? ' active' : '');
+        btn.dataset.subject = subj.id;
+        btn.style.borderColor = subj.id === currentSubject ? subj.color : 'rgba(139,92,246,0.3)';
+        btn.style.background = subj.id === currentSubject ? subj.color + '4D' : 'var(--stu-card2)';
+        btn.style.color = subj.id === currentSubject ? 'white' : 'var(--stu-text2)';
+        btn.innerHTML = `<span><span class="subject-indicator" style="background:${subj.color};"></span>${subj.name}</span>
+                         <span class="subject-status">${subj.id === currentSubject ? '● 当前' : '点击切换'}</span>`;
+        btn.addEventListener('click', () => {
+            currentSubject = subj.id;
+            initStudentDashboard();
+        });
+        selector.appendChild(btn);
+    });
+
+    // 成绩表格
+    const subjectExams = allExams.filter(e => e.subject === currentSubject);
+    const subj = getSubject(currentSubject);
+    document.getElementById('myScoresTitle').textContent = `我的成绩 · ${subj ? subj.name : ''}`;
+    const tbody = document.getElementById('myScoresBody');
+    tbody.innerHTML = '';
+    subjectExams.forEach(exam => {
+        const score = allScores.find(s => s.student_id === user.id && s.exam_id === exam.id);
+        const sc = score ? score.score : '-';
+        // 本班排名：只统计同班学生
+        const examScores = getClassExamScores(exam.id, user.class_id).sort((a, b) => b.score - a.score);
+        const rank = examScores.findIndex(s => s.student_id === user.id) + 1;
+        let level = '-', color = 'var(--stu-text3)';
+        if (sc !== '-') {
+            if (sc >= 90) { level = '优秀'; color = 'var(--stu-green)'; }
+            else if (sc >= 80) { level = '良好'; color = 'var(--stu-amber)'; }
+            else if (sc >= 60) { level = '及格'; color = 'var(--stu-blue)'; }
+            else { level = '待提高'; color = 'var(--stu-red)'; }
+        }
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${exam.name}</td><td>${exam.date}</td>
+                         <td style="font-size:18px;font-weight:bold;color:${subj ? subj.color : '#fff'};">${sc}</td>
+                         <td>${rank > 0 ? '第' + rank + '名' : '-'}</td>
+                         <td style="color:${color};font-weight:600;">${level}</td>`;
+        tbody.appendChild(row);
+    });
+
+    // 三科对比
+    const compareContainer = document.getElementById('subjectCompare');
+    compareContainer.innerHTML = '';
+    allSubjects.forEach(subj => {
+        const exams = allExams.filter(e => e.subject === subj.id);
+        if (exams.length === 0) return;
+        const latest = exams[exams.length - 1];
+        const score = allScores.find(s => s.student_id === user.id && s.exam_id === latest.id);
+        // 本班排名：只统计同班学生
+        const examScores = getClassExamScores(latest.id, user.class_id).sort((a, b) => b.score - a.score);
+        const rank = examScores.findIndex(s => s.student_id === user.id) + 1;
+        const item = document.createElement('div');
+        item.className = 'compare-item';
+        item.style.borderLeft = `3px solid ${subj.color}`;
+        item.innerHTML = `<div><span class="compare-subject" style="color:${subj.color};">${subj.name}</span>
+                          <span class="compare-rank">${rank > 0 ? '第' + rank + '名' : '-'}</span></div>
+                          <span class="compare-score" style="color:${subj.color};">${score ? score.score : '-'}</span>`;
+        compareContainer.appendChild(item);
+    });
+
+    // 分数段统计
+    const mathExams = allExams.filter(e => e.subject === currentSubject);
+    if (mathExams.length > 0) {
+        const latest = mathExams[mathExams.length - 1];
+        const examScores = getExamScores(latest.id);
+        const stats = { '100': 0, '90-99': 0, '80-89': 0, '70-79': 0, '60-69': 0, '<60': 0 };
+        examScores.forEach(s => {
+            if (s.score === 100) stats['100']++;
+            else if (s.score >= 90) stats['90-99']++;
+            else if (s.score >= 80) stats['80-89']++;
+            else if (s.score >= 70) stats['70-79']++;
+            else if (s.score >= 60) stats['60-69']++;
+            else stats['<60']++;
+        });
+        const ctx = document.getElementById('scoreSegmentChart');
+        if (charts.segment) charts.segment.destroy();
+        charts.segment = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['100', '90-99', '80-89', '70-79', '60-69', '<60'],
+                datasets: [{ label: '人数', data: Object.values(stats),
+                    backgroundColor: subj ? subj.color + 'CC' : '#8B5CF6CC',
+                    borderRadius: 4, barPercentage: 0.5 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { color: '#94A3B8', stepSize: 1 },
+                          grid: { color: 'rgba(255,255,255,0.1)' } },
+                          x: { ticks: { color: '#E2E8F0' }, grid: { display: false } } } }
+        });
+    }
+        // 排名波动趋势图
+    const rankCtx = document.getElementById('rankTrendChart');
+    if (rankCtx) {
+        if (charts.rankTrend) charts.rankTrend.destroy();
+        
+        const subjectExams = allExams.filter(e => e.subject === currentSubject);
+        const classRanks = [];
+        const examNames = [];
+        
+        subjectExams.forEach(exam => {
+            // 本班排名：只统计同班学生
+            const examScores = getClassExamScores(exam.id, user.class_id).sort((a, b) => b.score - a.score);
+            const rank = examScores.findIndex(s => s.student_id === user.id) + 1;
+            classRanks.push(rank > 0 ? rank : null);
+            examNames.push(exam.name);
+        });
+        
+        charts.rankTrend = new Chart(rankCtx, {
+            type: 'line',
+            data: {
+                labels: examNames,
+                datasets: [{
+                    label: '班级排名',
+                    data: classRanks,
+                    borderColor: subj ? subj.color : '#8B5CF6',
+                    backgroundColor: subj ? subj.color + '33' : '#8B5CF633',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 6,
+                    pointBackgroundColor: subj ? subj.color : '#8B5CF6',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { 
+                        reverse: true, 
+                        ticks: { color: '#94A3B8' },
+                        grid: { color: 'rgba(255,255,255,0.08)' }
+                    },
+                    x: { 
+                        ticks: { color: '#E2E8F0' },
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { labels: { color: '#E2E8F0' } }
+                }
+            }
+        });
+    }
+}
+
+async function initStudentPoints() {
+    if (!currentUser) return;
+    const points = await apiGet('/api/points/' + currentUser.id);
+    window._allPoints = points;
+    let cumulative = 0;
+    const tbody = document.getElementById('pointsTableBody');
+    tbody.innerHTML = '';
+    points.forEach(p => {
+        cumulative += p.value;
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${p.time ? p.time.split(' ')[0] : ''}</td>
+                         <td>${p.event}</td>
+                         <td style="color:${p.value > 0 ? 'var(--stu-green)' : 'var(--stu-red)'}">${p.value > 0 ? '+' : ''}${p.value} → ${cumulative}</td>`;
+        tbody.appendChild(row);
+    });
+    document.getElementById('pointsDetailTotal').textContent = cumulative + '分';
+}
+
+// ========== 教师端 ==========
+function showTeacherPage(pageId) {
+    document.querySelectorAll('#teacherLayout .page-content').forEach(p => p.classList.add('hidden'));
+    document.getElementById(pageId).classList.remove('hidden');
+    document.querySelectorAll('#teacherLayout .nav-menu a').forEach(a => a.classList.remove('active'));
+    document.querySelector(`#teacherLayout .nav-menu a[data-page="${pageId}"]`)?.classList.add('active');
+    const titles = { teacherUpload: '成绩上传', teacherStudents: '学生管理', teacherPoints: '积分管理' };
+    document.getElementById('teacherPageTitle').textContent = titles[pageId] || '';
+    if (pageId === 'teacherStudents') renderTeacherStudents();
+    if (pageId === 'teacherPoints') initTeacherPoints();
+}
+
+async function initTeacherPage() {
+    document.getElementById('teacherNameDisplay').textContent = currentUser.name;
+    document.querySelector('#teacherLayout .user-avatar').textContent = currentUser.name[0];
+
+    // 清空班型选项卡（用户要求取消）
+    const classTypeTabs = document.getElementById('classTypeTabs');
+    classTypeTabs.innerHTML = '';
+
+    // 年级和科目筛选器
+    // 动态生成年级选项（从所有班级中提取不重复年级）
+    const allGrades = [...new Set((allClasses || []).map(c => c.grade).filter(Boolean))].sort();
+    const gradeOptions = allGrades.length > 0 
+        ? allGrades.map(g => `<option value="${g}" ${g === '八年级' ? 'selected' : ''}>${g}</option>`).join('')
+        : '<option value="七年级">七年级</option><option value="八年级" selected>八年级</option><option value="九年级">九年级</option>';
+
+    const filterHtml = `
+        <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:var(--biz-bg);border-radius:8px;border:1px solid var(--biz-border);">
+            <div>
+                <label style="font-size:13px;color:var(--biz-text2);margin-right:8px;">年级：</label>
+                <select id="teacherGradeFilter" style="padding:6px 12px;border:1px solid var(--biz-border);border-radius:4px;">
+                    <option value="all">全部</option>
+                    ${gradeOptions}
+                </select>
+            </div>
+            <div>
+                <label style="font-size:13px;color:var(--biz-text2);margin-right:8px;">科目：</label>
+                <select id="teacherSubjectFilter" style="padding:6px 12px;border:1px solid var(--biz-border);border-radius:4px;">
+                    <option value="all" selected>全部</option>
+                    ${allSubjects.map(s => `<option value="${s.id}">${s.name}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label style="font-size:13px;color:var(--biz-text2);margin-right:8px;">班型：</label>
+                <select id="teacherClassTypeFilter" style="padding:6px 12px;border:1px solid var(--biz-border);border-radius:4px;">
+                    <option value="all" selected>全部</option>
+                    ${allClassTypes.map(t => `<option value="${t.id}">${t.name}</option>`).join('')}
+                </select>
+            </div>
+            <div>
+                <label style="font-size:13px;color:var(--biz-text2);margin-right:8px;">查找：</label>
+                <input type="text" id="teacherSearchInput" placeholder="输入学生姓名" style="padding:6px 12px;border:1px solid var(--biz-border);border-radius:4px;width:140px;">
+            </div>
+            <button class="btn btn-blue btn-sm" onclick="applyTeacherFilters()">查询</button>
+        </div>
+    `;
+
+    // 在班型选项卡后面插入筛选器（先移除旧的，防止重复）
+    const oldFilter = document.getElementById('teacherFilterContainer');
+    if (oldFilter) oldFilter.remove();
+
+    const tabsContainer = document.querySelector('#classTypeTabs').parentElement;
+    const filterContainer = document.createElement('div');
+    filterContainer.id = 'teacherFilterContainer';
+    filterContainer.innerHTML = filterHtml;
+    tabsContainer.after(filterContainer);
+
+    // 绑定筛选事件
+    document.getElementById('teacherGradeFilter').addEventListener('change', applyTeacherFilters);
+    document.getElementById('teacherSubjectFilter').addEventListener('change', applyTeacherFilters);
+    document.getElementById('teacherClassTypeFilter').addEventListener('change', applyTeacherFilters);
+    document.getElementById('teacherSearchInput').addEventListener('input', applyTeacherFilters);
+
+    // 科目切换时，更新班型下拉框
+    document.getElementById('teacherSubjectFilter').addEventListener('change', function() {
+        updateClassTypeOptions(this.value);
+    });
+
+    // 保存当前筛选状态并渲染
+    window._teacherFilters = { grade: '八年级', subject: 'all', classType: 'all', search: '' };
+    updateClassTypeOptions('八年级', 'all');
+    renderTeacheroverviewWithFilters();
+
+    // ===== 以下是原有的积分管理和添加学生代码，保持不变 =====
+    const sel = document.getElementById('pointStudentSelect');
+    sel.innerHTML = '';
+    allStudents.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.name;
+        sel.appendChild(opt);
+    });
+    document.getElementById('pointEventSelect').addEventListener('change', (e) => {
+        const vals = { '缺课': -5, '未交作业': -3, '作业未完成': -2, '手动加分': 5, '手动减分': -5 };
+        document.getElementById('pointValue').value = vals[e.target.value] || 0;
+    });
+    document.getElementById('addPointBtn').addEventListener('click', async () => {
+        const sid = document.getElementById('pointStudentSelect').value;
+        const event = document.getElementById('pointEventSelect').value;
+        const value = parseInt(document.getElementById('pointValue').value);
+        await apiPost('/api/points', { studentId: sid, event, value });
+        showFeedback('success', `积分调整成功: ${event} ${value > 0 ? '+' : ''}${value}`);
+        initTeacherPoints();
+    });
+
+    document.getElementById('teacherAddStudentBtn').addEventListener('click', () => {
+        showModal('添加学生', `
+            <div class="form-group"><label>姓名</label><input type="text" id="newStuName" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+            <div class="form-group"><label>手机号</label><input type="text" id="newStuPhone" value="13800000000" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+            <div class="form-group"><label>班级</label><select id="newStuClass" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;">
+                ${allClasses.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
+        `, '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-blue" onclick="submitAddStudent()">确认</button>');
+    });
+
+    // 全选/取消全选
+    document.getElementById('teacherSelectAll').addEventListener('change', (e) => {
+        document.querySelectorAll('.teacher-stu-check').forEach(cb => cb.checked = e.target.checked);
+        updateTeacherBatchDeleteBtn();
+    });
+
+    // 批量删除按钮
+    document.getElementById('teacherBatchDeleteBtn').addEventListener('click', teacherBatchDelete);
+}
+
+function applyTeacherFilters() {
+    const grade = document.getElementById('teacherGradeFilter').value;
+    const subject = document.getElementById('teacherSubjectFilter').value;
+    const classType = document.getElementById('teacherClassTypeFilter').value;
+    const search = document.getElementById('teacherSearchInput')?.value?.trim() || '';
+    window._teacherFilters = { grade, subject, classType, search };
+    updateClassTypeOptions(grade, subject);
+    renderTeacheroverviewWithFilters();
+}
+
+function formatClassTypeName(name, subjectId) {
+    if (!subjectId || subjectId === 'all') return name;
+    const subjectNames = { chinese: '语文', math: '数学', english: '英语', physics: '物理', chemistry: '化学' };
+    const prefix = subjectNames[subjectId];
+    if (prefix && name.startsWith(prefix)) {
+        return name.slice(prefix.length);
+    }
+    return name;
+}
+
+function updateClassTypeOptions(grade, subject) {
+    const select = document.getElementById('teacherClassTypeFilter');
+    const currentValue = select.value;
+    
+    // 根据年级获取该年级实际存在的班型ID集合
+    let gradeClassTypeIds = null;
+    if (grade && grade !== 'all') {
+        gradeClassTypeIds = new Set();
+        for (const cls of allClasses) {
+            if (cls.grade === grade) {
+                gradeClassTypeIds.add(cls.class_type_id);
+            }
+        }
+    }
+    
+    let options = `<option value="all">全部</option>`;
+    for (const ct of allClassTypes) {
+        // 科目过滤
+        if (subject && subject !== 'all' && ct.subject !== subject) continue;
+        // 年级过滤：只显示该年级下实际有班级的班型
+        if (gradeClassTypeIds && !gradeClassTypeIds.has(ct.id)) continue;
+        // 去掉科目前缀显示（如"语文强化"→"强化"）
+        const displayName = formatClassTypeName(ct.name, subject);
+        options += `<option value="${ct.id}">${displayName}</option>`;
+    }
+    select.innerHTML = options;
+    
+    if (!Array.from(select.options).some(opt => opt.value === currentValue)) {
+        select.value = 'all';
+        window._teacherFilters = window._teacherFilters || {};
+        window._teacherFilters.classType = 'all';
+    } else {
+        select.value = currentValue;
+    }
+}
+
+function renderTeacheroverviewWithFilters() {
+    const tbody = document.getElementById('teacherOverviewBody');
+    if (!tbody) return;
+    
+    const table = tbody.closest('table');
+    const thead = table.querySelector('thead');
+    
+    const { grade, subject, classType, search } = window._teacherFilters || { grade: 'all', subject: 'all', classType: 'all', search: '' };
+
+    // 筛选班级
+    let classes = allClasses;
+    if (classType !== 'all') {
+        classes = classes.filter(c => c.class_type_id === classType);
+    }
+    if (grade !== 'all') {
+        classes = classes.filter(c => c.grade === grade);
+    }
+
+    // 收集所有要显示的学生（带搜索过滤）
+    let allDisplayStudents = [];
+    for (const cls of classes) {
+        const classStudents = allStudents.filter(s => s.class_id === cls.id);
+        for (const student of classStudents) {
+            if (search && !student.name.includes(search)) continue;
+            allDisplayStudents.push({ student, cls });
+        }
+    }
+
+    // 如果筛选了具体科目：横向显示所有考试列
+    if (subject !== 'all') {
+        let exams = allExams.filter(e => e.subject === subject);
+        
+        let theadHtml = `<tr><th>姓名</th>`;
+        for (const exam of exams) {
+            theadHtml += `<th>${exam.name}</th>`;
+        }
+        theadHtml += `<th>平均分</th><th>操作</th></tr>`;
+        thead.innerHTML = theadHtml;
+
+        if (allDisplayStudents.length === 0 || exams.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="${exams.length + 3}" style="text-align:center;color:var(--biz-text2);padding:30px;">暂无匹配的成绩数据</td></tr>`;
+            return;
+        }
+
+        tbody.innerHTML = '';
+        for (const { student, cls } of allDisplayStudents) {
+            let html = `<td style="font-weight:600;">${student.name}</td>`;
+            let total = 0, count = 0;
+            for (const exam of exams) {
+                const score = allScores.find(s => s.student_id === student.id && s.exam_id === exam.id);
+                const sc = score ? score.score : '-';
+                if (score) { total += score.score; count++; }
+                html += `<td style="font-weight:600;cursor:pointer;" ondblclick="editScore('${student.id}', '${exam.id}', ${score ? score.score : 'null'}, this)" title="双击修改">${sc}</td>`;
+            }
+            const avg = count > 0 ? (total / count).toFixed(1) : '-';
+            html += `<td style="font-weight:bold;color:var(--biz-blue);">${avg}</td>`;
+            html += `<td><button class="btn btn-sm btn-blue" onclick="showStudentDetail('${student.id}')">查看</button></td>`;
+            const row = document.createElement('tr');
+            row.innerHTML = html;
+            tbody.appendChild(row);
+        }
+        return;
+    }
+
+    // 如果筛选"全部"科目：按学科分行显示
+    let theadHtml = `<tr><th>姓名</th><th>班级</th><th>学科</th><th>最近考试</th><th>分数</th><th>班级排名</th><th>等级</th><th>操作</th></tr>`;
+    thead.innerHTML = theadHtml;
+
+    // 构建学生-学科列表
+    let displayRows = [];
+    for (const { student, cls } of allDisplayStudents) {
+        // 获取该学生所有有成绩的学科
+        const studentScoreRecords = allScores.filter(s => s.student_id === student.id);
+        const subjectIds = [...new Set(studentScoreRecords.map(s => s.subject))];
+        
+        for (const subjId of subjectIds) {
+            const subj = getSubject(subjId);
+            // 获取该学科的所有考试，取最近一场
+            const subjExams = allExams.filter(e => e.subject === subjId).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
+            const latestExam = subjExams[0];
+            if (!latestExam) continue;
+            
+            const scoreRecord = allScores.find(s => s.student_id === student.id && s.exam_id === latestExam.id);
+            if (!scoreRecord) continue;
+            
+            const sc = scoreRecord.score;
+            // 本班排名
+            const classScores = getClassExamScores(latestExam.id, cls.id).sort((a, b) => b.score - a.score);
+            const rank = classScores.findIndex(s => s.student_id === student.id) + 1;
+            // 等级
+            let level = '-', color = 'var(--stu-text3)';
+            if (sc >= 90) { level = '优秀'; color = 'var(--stu-green)'; }
+            else if (sc >= 80) { level = '良好'; color = 'var(--stu-amber)'; }
+            else if (sc >= 60) { level = '及格'; color = 'var(--stu-blue)'; }
+            else { level = '待提高'; color = 'var(--stu-red)'; }
+            
+            displayRows.push({
+                student, cls, subj, latestExam, sc, rank, level, color, scoreRecord
+            });
+        }
+    }
+
+    if (displayRows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--biz-text2);padding:30px;">暂无匹配的成绩数据</td></tr>`;
+        return;
+    }
+
+    // 渲染
+    tbody.innerHTML = '';
+    for (const row of displayRows) {
+        const { student, cls, subj, latestExam, sc, rank, level, color, scoreRecord } = row;
+        let html = `<td style="font-weight:600;">${student.name}</td>`;
+        html += `<td>${cls ? cls.name : '-'}</td>`;
+        html += `<td style="color:${subj ? subj.color : '#fff'};font-weight:600;">${subj ? subj.name : '-'}</td>`;
+        html += `<td>${latestExam.name}</td>`;
+        html += `<td style="font-weight:600;cursor:pointer;" ondblclick="editScore('${student.id}', '${latestExam.id}', ${sc}, this)" title="双击修改">${sc}</td>`;
+        html += `<td>${rank > 0 ? '第' + rank + '名' : '-'}</td>`;
+        html += `<td style="color:${color};font-weight:600;">${level}</td>`;
+        html += `<td><button class="btn btn-sm btn-blue" onclick="showStudentDetail('${student.id}')">查看</button></td>`;
+        const tr = document.createElement('tr');
+        tr.innerHTML = html;
+        tbody.appendChild(tr);
+    }
+}
+
+
+async function teacherDeleteStudent(id) {
+    if (!confirm('确定删除该学生吗？')) return;
+    await apiDelete('/api/students/' + id);
+    showFeedback('success', '删除成功');
+    await loadAllData();
+    renderTeacherStudents();
+    renderTeacheroverviewWithFilters();
+}
+
+async function initTeacherPoints() {
+    const tbody = document.getElementById('teacherPointsBody');
+    tbody.innerHTML = '';
+    for (const student of allStudents) {
+        const pts = await apiGet('/api/points/' + student.id);
+        const total = pts.reduce((s, p) => s + p.value, 0);
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${student.name}</td>
+                         <td style="color:var(--stu-purple);font-weight:bold;">${total}</td>
+                         <td><button class="btn btn-sm btn-blue" onclick="viewPointDetail('${student.id}')">明细</button></td>`;
+        tbody.appendChild(row);
+    }
+}
+
+async function viewPointDetail(id) {
+    const student = getStudent(id);
+    const pts = await apiGet('/api/points/' + id);
+    let html = `<h4>${student.name} 积分明细</h4><table class="data-table"><thead><tr><th>时间</th><th>事件</th><th>分值</th></tr></thead><tbody>`;
+    pts.forEach(p => {
+        html += `<tr><td>${p.time || ''}</td><td>${p.event}</td><td style="color:${p.value>0?'green':'red'}">${p.value>0?'+':''}${p.value}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    showModal('积分明细', html);
+}
+
+async function submitAddStudent() {
+    const name = document.getElementById('newStuName').value.trim();
+    const phone = document.getElementById('newStuPhone').value.trim();
+    const classId = document.getElementById('newStuClass').value;
+    if (!name) { showFeedback('error', '请填写姓名'); return; }
+    await apiPost('/api/students', { name, phone, classId, account: name.toLowerCase() });
+    showFeedback('success', '添加成功');
+    closeModal();
+    await loadAllData();
+    renderTeacherStudents();
+    renderTeacheroverviewWithFilters();
+}
+
+async function renderTeacherStudents() {
+    const tbody = document.getElementById('teacherStudentsBody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    // 所有教师/教务都能看到所有学生（不再按科目过滤）
+    for (const student of allStudents) {
+        const cls = getClass(student.class_id);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="checkbox" class="teacher-stu-check" data-id="${student.id}" style="cursor:pointer;"></td>
+            <td style="font-weight:600;">${student.name}</td>
+            <td>${student.account}</td>
+            <td>${cls ? cls.name : '-'}</td>
+            <td>${student.phone || '-'}</td>
+            <td><button class="btn btn-sm btn-red" onclick="teacherDeleteStudent('${student.id}')">删除</button></td>
+        `;
+        tbody.appendChild(row);
+    }
+    // 绑定复选框变化事件
+    document.querySelectorAll('.teacher-stu-check').forEach(cb => {
+        cb.addEventListener('change', updateTeacherBatchDeleteBtn);
+    });
+}
+
+function updateTeacherBatchDeleteBtn() {
+    const checked = document.querySelectorAll('.teacher-stu-check:checked');
+    const btn = document.getElementById('teacherBatchDeleteBtn');
+    btn.style.display = checked.length > 0 ? 'inline-block' : 'none';
+    btn.textContent = `🗑️ 批量删除 (${checked.length})`;
+}
+
+async function teacherBatchDelete() {
+    const checked = document.querySelectorAll('.teacher-stu-check:checked');
+    if (checked.length === 0) return;
+    const ids = Array.from(checked).map(cb => cb.dataset.id);
+    const names = Array.from(checked).map(cb => {
+        const row = cb.closest('tr');
+        return row.querySelector('td:nth-child(2)').textContent;
+    });
+    if (!confirm(`确定删除以下 ${ids.length} 名学生？\n${names.join('、')}`)) return;
+    showFeedback('loading', '正在删除...');
+    try {
+        await apiPost('/api/students/batch-delete', { ids });
+        showFeedback('success', `已删除 ${ids.length} 名学生`);
+        await loadAllData();
+        renderTeacherStudents();
+        renderTeacheroverviewWithFilters();
+        document.getElementById('teacherSelectAll').checked = false;
+        updateTeacherBatchDeleteBtn();
+    } catch (err) {
+        showFeedback('error', '删除失败: ' + err.message);
+    }
+}
+
+// 双击编辑成绩
+function editScore(studentId, examId, currentScore, cell) {
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = currentScore !== null ? currentScore : '';
+    input.style.width = '60px';
+    input.style.padding = '4px';
+    input.style.border = '1px solid var(--biz-blue)';
+    input.style.borderRadius = '4px';
+    input.style.background = 'var(--stu-card2)';
+    input.style.color = 'var(--stu-text)';
+    
+    cell.innerHTML = '';
+    cell.appendChild(input);
+    input.focus();
+    input.select();
+    
+    async function save() {
+        const newScore = parseFloat(input.value);
+        if (isNaN(newScore)) {
+            cell.textContent = currentScore !== null ? currentScore : '-';
+            return;
+        }
+        showFeedback('loading', '保存中...');
+        try {
+            // 先查找是否已有成绩记录
+            const existing = allScores.find(s => s.student_id === studentId && s.exam_id === examId);
+            if (existing) {
+                // 更新已有成绩
+                await apiPut('/api/scores/' + existing.id, { score: newScore });
+                existing.score = newScore;
+            } else {
+                // 新建成绩
+                await apiPost('/api/scores', { studentId, examId, score: newScore });
+                await loadAllData();
+            }
+            showFeedback('success', '成绩已更新');
+            cell.textContent = newScore;
+            cell.style.color = 'var(--stu-green)';
+            // 刷新平均分
+            renderTeacheroverviewWithFilters();
+        } catch (err) {
+            showFeedback('error', '保存失败: ' + err.message);
+            cell.textContent = currentScore !== null ? currentScore : '-';
+        }
+    }
+    
+    input.addEventListener('blur', save);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { input.blur(); }
+        if (e.key === 'Escape') {
+            cell.textContent = currentScore !== null ? currentScore : '-';
+        }
+    });
+}
+
+// 查看学生成绩详情
+async function showStudentDetail(studentId) {
+    const student = getStudent(studentId);
+    if (!student) return;
+    const cls = getClass(student.class_id);
+    const studentScores = allScores.filter(s => s.student_id === studentId);
+    const studentExams = studentScores.map(s => {
+        const exam = allExams.find(e => e.id === s.exam_id);
+        return { examName: exam ? exam.name : '-', subject: exam ? exam.subject : '-', score: s.score };
+    });
+    
+    let html = `<h4>${student.name} ${cls ? '(' + cls.name + ')' : ''}</h4>`;
+    html += `<table class="data-table"><thead><tr><th>考试</th><th>科目</th><th>分数</th></tr></thead><tbody>`;
+    studentExams.forEach(se => {
+        const subj = getSubject(se.subject);
+        html += `<tr><td>${se.examName}</td><td>${subj ? subj.name : '-'}</td><td style="font-weight:bold;color:${subj ? subj.color : '#fff'};">${se.score}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    showModal('学生成绩详情', html, '<button class="btn btn-outline" onclick="closeModal()">关闭</button>');
+}
+
+// ========== 教务端 ==========
+function showAdminPage(pageId) {
+    document.querySelectorAll('#adminLayout .page-content').forEach(p => p.classList.add('hidden'));
+    document.getElementById(pageId).classList.remove('hidden');
+    document.querySelectorAll('#adminLayout .nav-menu a').forEach(a => a.classList.remove('active'));
+    document.querySelector(`#adminLayout .nav-menu a[data-page="${pageId}"]`)?.classList.add('active');
+    const titles = { adminStudents: '学生管理', adminQuery: '成绩查询' };
+    document.getElementById('adminPageTitle').textContent = titles[pageId] || '';
+    if (pageId === 'adminStudents') renderAdminStudents();
+    if (pageId === 'adminQuery') renderAdminQuery();
+}
+
+async function initAdminPage() {
+    document.getElementById('adminNameDisplay').textContent = currentUser.name;
+    document.querySelector('#adminLayout .user-avatar').textContent = currentUser.name[0];
+    renderAdminStudents();
+
+    document.getElementById('addStudentBtn').addEventListener('click', () => {
+        showModal('添加学生', `
+            <div class="form-group"><label>姓名</label><input type="text" id="adminNewStuName" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+            <div class="form-group"><label>手机号</label><input type="text" id="adminNewStuPhone" value="13800000000" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+            <div class="form-group"><label>班级</label><select id="adminNewStuClass" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;">
+                ${allClasses.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</select></div>
+        `, '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-blue" onclick="submitAdminAddStudent()">确认</button>');
+    });
+
+    // 删除班级
+    document.getElementById('adminDeleteClassBtn').addEventListener('click', () => {
+        const classOptions = allClasses.map(c => `<option value="${c.id}">${c.name} (${c.grade})</option>`).join('');
+        showModal('删除班级', `
+            <div class="form-group">
+                <label>选择要删除的班级</label>
+                <select id="deleteClassSelect" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;">
+                    ${classOptions}
+                </select>
+                <p style="color:var(--stu-red);font-size:12px;margin-top:8px;">⚠️ 删除后，该班级学生将变为未分配班级状态</p>
+            </div>
+        `, '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-red" onclick="submitDeleteClass()">确认删除</button>');
+    });
+
+    // 教务端批量删除
+    document.getElementById('adminBatchDeleteBtn').addEventListener('click', adminBatchDelete);
+    document.getElementById('adminSelectAll').addEventListener('change', (e) => {
+        document.querySelectorAll('.admin-stu-check').forEach(cb => cb.checked = e.target.checked);
+        updateAdminBatchDeleteBtn();
+    });
+}
+
+async function submitDeleteClass() {
+    const classId = document.getElementById('deleteClassSelect').value;
+    const cls = getClass(classId);
+    if (!confirm(`确定删除班级「${cls ? cls.name : classId}」？\n该班级学生将变为未分配班级状态。`)) return;
+    showFeedback('loading', '正在删除...');
+    try {
+        await apiDelete('/api/classes/' + classId);
+        showFeedback('success', '班级已删除');
+        closeModal();
+        await loadAllData();
+        renderAdminStudents();
+    } catch (err) {
+        showFeedback('error', '删除失败: ' + err.message);
+    }
+}
+
+async function renderAdminStudents() {
+    const tbody = document.getElementById('adminStudentsBody');
+    tbody.innerHTML = '';
+    for (const student of allStudents) {
+        const cls = getClass(student.class_id);
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="checkbox" class="admin-stu-check" data-id="${student.id}" style="cursor:pointer;"></td>
+            <td style="font-weight:600;">${student.name}</td>
+            <td>${student.account}</td>
+            <td>${cls ? cls.name : '-'}</td>
+            <td>${student.phone || '-'}</td>
+            <td><button class="btn btn-sm btn-red" onclick="adminDeleteStudent('${student.id}')">删除</button></td>
+        `;
+        tbody.appendChild(row);
+    }
+    // 绑定复选框变化事件
+    document.querySelectorAll('.admin-stu-check').forEach(cb => {
+        cb.addEventListener('change', updateAdminBatchDeleteBtn);
+    });
+}
+
+function updateAdminBatchDeleteBtn() {
+    const checked = document.querySelectorAll('.admin-stu-check:checked');
+    const btn = document.getElementById('adminBatchDeleteBtn');
+    btn.style.display = checked.length > 0 ? 'inline-block' : 'none';
+    btn.textContent = `🗑️ 批量删除 (${checked.length})`;
+}
+
+async function adminBatchDelete() {
+    const checked = document.querySelectorAll('.admin-stu-check:checked');
+    if (checked.length === 0) return;
+    const ids = Array.from(checked).map(cb => cb.dataset.id);
+    const names = Array.from(checked).map(cb => {
+        const row = cb.closest('tr');
+        return row.querySelector('td:nth-child(2)').textContent;
+    });
+    if (!confirm(`确定删除以下 ${ids.length} 名学生？\n${names.join('、')}`)) return;
+    showFeedback('loading', '正在删除...');
+    try {
+        await apiPost('/api/students/batch-delete', { ids });
+        showFeedback('success', `已删除 ${ids.length} 名学生`);
+        await loadAllData();
+        renderAdminStudents();
+        document.getElementById('adminSelectAll').checked = false;
+        updateAdminBatchDeleteBtn();
+    } catch (err) {
+        showFeedback('error', '删除失败: ' + err.message);
+    }
+}
+
+async function adminDeleteStudent(id) {
+    if (!confirm('确定删除吗？')) return;
+    await apiDelete('/api/students/' + id);
+    showFeedback('success', '删除成功');
+    await loadAllData();
+    renderAdminStudents();
+}
+
+async function submitAdminAddStudent() {
+    const name = document.getElementById('adminNewStuName').value.trim();
+    const phone = document.getElementById('adminNewStuPhone').value.trim();
+    const classId = document.getElementById('adminNewStuClass').value;
+    if (!name) { showFeedback('error', '请填写姓名'); return; }
+    await apiPost('/api/students', { name, phone, classId, account: name.toLowerCase() });
+    showFeedback('success', '添加成功');
+    closeModal();
+    await loadAllData();
+    renderAdminStudents();
+}
+
+async function renderAdminQuery() {
+    const tbody = document.getElementById('adminQueryBody');
+    tbody.innerHTML = '';
+    const mathExams = allExams.filter(e => e.subject === 'math');
+    if (mathExams.length === 0) return;
+    const latest = mathExams[mathExams.length - 1];
+    const examScores = getExamScores(latest.id).sort((a, b) => b.score - a.score);
+    examScores.forEach((s, idx) => {
+        const student = getStudent(s.student_id);
+        if (!student) return;
+        let level = '-', color = 'var(--biz-text2)';
+        if (s.score >= 90) { level = '优秀'; color = 'var(--stu-green)'; }
+        else if (s.score >= 80) { level = '良好'; color = 'var(--stu-amber)'; }
+        else if (s.score >= 60) { level = '及格'; color = 'var(--stu-blue)'; }
+        else { level = '待提高'; color = 'var(--stu-red)'; }
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${student.name}</td>
+                         <td style="font-weight:bold;color:var(--biz-blue);">${s.score}</td>
+                         <td>第${idx+1}名</td>
+                         <td style="color:${color};font-weight:600;">${level}</td>`;
+        tbody.appendChild(row);
+    });
+}
+
+// ========== 校长端 ==========
+function showPrincipalPage(pageId) {
+    document.querySelectorAll('#principalLayout .page-content').forEach(p => p.classList.add('hidden'));
+    document.getElementById(pageId).classList.remove('hidden');
+    document.querySelectorAll('#principalLayout .nav-menu a').forEach(a => a.classList.remove('active'));
+    document.querySelector(`#principalLayout .nav-menu a[data-page="${pageId}"]`)?.classList.add('active');
+    const titles = { principalUsers: '账户管理', principalStats: '数据监控' };
+    document.getElementById('principalPageTitle').textContent = titles[pageId] || '';
+    if (pageId === 'principalUsers') renderPrincipalUsers();
+    if (pageId === 'principalStats') renderPrincipalStats();
+}
+
+async function initPrincipalPage() {
+    document.getElementById('principalNameDisplay').textContent = currentUser.name;
+    document.querySelector('#principalLayout .user-avatar').textContent = currentUser.name[0];
+    renderPrincipalUsers();
+    renderPrincipalStats();
+
+    document.getElementById('addUserBtn').addEventListener('click', () => {
+        showModal('添加账户', `
+            <div class="form-group"><label>角色</label><select id="newUserRole" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;">
+                <option value="teacher">教师</option><option value="admin">教务</option></select></div>
+            <div class="form-group"><label>姓名</label><input type="text" id="newUserName" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+            <div class="form-group"><label>账号</label><input type="text" id="newUserAccount" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+            <div class="form-group"><label>密码</label><input type="text" id="newUserPassword" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+        `, '<button class="btn btn-outline" onclick="closeModal()">取消</button><button class="btn btn-blue" onclick="submitAddUser()">确认</button>');
+    });
+}
+
+async function resetUserPassword(id) {
+    await apiPut('/api/users/' + id + '/reset-password');
+    showFeedback('success', '密码已重置为 123456');
+}
+
+async function deleteUserAccount(id) {
+    if (!confirm('确定删除吗？')) return;
+    await apiDelete('/api/users/' + id);
+    showFeedback('success', '删除成功');
+    await loadAllData();
+    renderPrincipalUsers();
+}
+
+async function submitAddUser() {
+    const role = document.getElementById('newUserRole').value;
+    const name = document.getElementById('newUserName').value.trim();
+    const account = document.getElementById('newUserAccount').value.trim();
+    const password = document.getElementById('newUserPassword').value.trim();
+    
+    if (!name || !account || !password) { 
+        showFeedback('error', '请填写完整信息'); 
+        return; 
+    }
+    
+    if (allUsers.find(u => u.account === account)) {
+        showFeedback('error', '该账号已存在');
+        return;
+    }
+    
+    try {
+        if (role === 'teacher') {
+            const subjectsRes = await apiGet('/api/subjects');
+           const subjectOptions = subjectsRes.map(s => 
+    `<label style="display:inline-flex;align-items:center;gap:2px;cursor:pointer;margin-right:12px;color:#FFFACD;font-size:14px;">
+        <input type="checkbox" value="${s.id}" class="teacher-subject-cb" style="margin:0;width:14px;height:14px;"> ${s.name}
+    </label>`
+).join('');
+            
+            window._addTeacherData = { role, name, account, password };
+            
+           showModal('选择执教科目', 
+    `<div style="display:flex;flex-wrap:wrap;gap:4px 16px;padding:10px 0;">${subjectOptions}</div>
+     <p style="color:var(--biz-text2);font-size:13px;margin-top:8px;">请至少选择一个科目</p>`,
+    `<button class="btn btn-outline" onclick="closeModal()">取消</button>
+     <button class="btn btn-blue" onclick="confirmTeacherAdd()">确认添加</button>`
+);
+            return;
+        }
+        
+        await doAddUser(role, name, account, password, [], []);
+    } catch (err) {
+        showFeedback('error', '添加失败: ' + err.message);
+    }
+}
+
+window.confirmTeacherAdd = async function() {
+    const checked = document.querySelectorAll('.teacher-subject-cb:checked');
+    const selected = Array.from(checked).map(cb => cb.value);
+    if (selected.length === 0) {
+        showFeedback('error', '请至少选择一个科目');
+        return;
+    }
+    const data = window._addTeacherData;
+    await doAddUser(data.role, data.name, data.account, data.password, selected, ['c1', 'c2', 'c3']);
+    closeModal();
+};
+
+async function doAddUser(role, name, account, password, subjects, classIds) {
+    const result = await apiPost('/api/users', { 
+        name, account, password, role,
+        subjects: subjects,
+        classIds: classIds
+    });
+    showFeedback('success', `✅ ${role === 'teacher' ? '教师' : '教务'}账号添加成功！密码: ${password}`);
+    await loadAllData();
+    renderPrincipalUsers();
+    renderPrincipalStats();
+}
+
+
+async function renderPrincipalUsers() {
+    const tbody = document.getElementById('principalUsersBody');
+    tbody.innerHTML = '';
+    for (const user of allUsers) {
+        if (user.role === 'principal') continue;
+        const roleMap = { student: '学生', teacher: '教师', admin: '教务' };
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.account}</td>
+            <td>${user.name}</td>
+            <td>${roleMap[user.role] || user.role}</td>
+            <td>
+                <button class="btn btn-sm btn-blue" onclick="editUserAccount('${user.id}')">✏️ 编辑</button>
+                <button class="btn btn-sm btn-blue" onclick="resetUserPassword('${user.id}')">重置密码</button>
+                ${user.role !== 'principal' ? `<button class="btn btn-sm btn-red" onclick="deleteUserAccount('${user.id}')">删除</button>` : ''}
+            </td>
+        `;
+        tbody.appendChild(row);
+    }
+}
+
+async function renderPrincipalStats() {
+    document.getElementById('statTotalStudents').textContent = allStudents.length;
+    document.getElementById('statTotalTeachers').textContent = allUsers.filter(u => u.role === 'teacher').length;
+    document.getElementById('statTotalExams').textContent = allExams.length;
+    const allScoresList = await apiGet('/api/scores');
+    const avg = allScoresList.length > 0 ? (allScoresList.reduce((a,b) => a + b.score, 0) / allScoresList.length).toFixed(1) : 0;
+    document.getElementById('statAvgScore').textContent = avg;
+}
+
+async function editUserAccount(userId) {
+    // ...
+}
+
+async function editUserAccount(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const roleMap = { student: '学生', teacher: '教师', admin: '教务' };
+    
+    let extraFields = '';
+    if (user.role === 'teacher') {
+        // 显示当前科目
+        const currentSubjects = user.subjects ? JSON.parse(user.subjects) : [];
+        const subjectOptions = allSubjects.map(s => {
+            const checked = currentSubjects.includes(s.id) ? 'checked' : '';
+            return `<label style="display:flex;align-items:center;gap:6px;cursor:pointer;margin:4px 0;">
+                <input type="checkbox" value="${s.id}" class="edit-subject-cb" ${checked}> ${s.name}
+            </label>`;
+        }).join('');
+        extraFields = `
+            <div class="form-group">
+                <label>执教科目</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:8px 0;">${subjectOptions}</div>
+            </div>
+        `;
+    }
+    
+    showModal('编辑账户', `
+        <div class="form-group"><label>角色</label><input type="text" value="${roleMap[user.role] || user.role}" disabled style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;background:#f0f0f0;"></div>
+        <div class="form-group"><label>姓名</label><input type="text" id="editUserName" value="${user.name}" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+        <div class="form-group"><label>账号</label><input type="text" id="editUserAccount" value="${user.account}" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+        <div class="form-group"><label>密码（留空不修改）</label><input type="text" id="editUserPassword" placeholder="留空则保持原密码" style="width:100%;padding:10px;border:1px solid var(--biz-border);border-radius:6px;"></div>
+        ${extraFields}
+    `, `
+        <button class="btn btn-outline" onclick="closeModal()">取消</button>
+        <button class="btn btn-blue" onclick="saveUserEdit('${user.id}')">保存修改</button>
+    `);
+}
+
+async function saveUserEdit(userId) {
+    const user = allUsers.find(u => u.id === userId);
+    if (!user) return;
+    
+    const name = document.getElementById('editUserName').value.trim();
+    const account = document.getElementById('editUserAccount').value.trim();
+    const password = document.getElementById('editUserPassword').value.trim();
+    
+    if (!name || !account) {
+        showFeedback('error', '姓名和账号不能为空');
+        return;
+    }
+    
+    const updateData = { name, account };
+    if (password) updateData.password = password;
+    
+    // 如果是教师，收集科目
+    if (user.role === 'teacher') {
+        const checked = document.querySelectorAll('.edit-subject-cb:checked');
+        updateData.subjects = Array.from(checked).map(cb => cb.value);
+    }
+    
+    try {
+        await apiPut('/api/users/' + userId, updateData);
+        showFeedback('success', '✅ 用户信息已更新');
+        closeModal();
+        await loadAllData();
+        renderPrincipalUsers();
+    } catch (err) {
+        showFeedback('error', '更新失败: ' + err.message);
+    }
+}
+
+// ========== 上传成绩 ==========
+function initUploadZones() {
+    const zone = document.getElementById('scoreUploadZone');
+    const input = document.getElementById('scoreFileInput');
+    if (!zone) return;
+    zone.addEventListener('click', () => input.click());
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', (e) => {
+        e.preventDefault(); zone.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) handleScoreUpload(e.dataTransfer.files[0]);
+    });
+    input.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) handleScoreUpload(e.target.files[0]);
+    });
+}
+
+async function handleScoreUpload(file) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        try {
+            const data = new Uint8Array(e.target.result);
+            const workbook = XLSX.read(data, { type: 'array', cellFormula: false });
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const json = XLSX.utils.sheet_to_json(sheet, { defval: '' });
+            
+            if (!json || json.length === 0) { 
+                showFeedback('error', '文件为空'); 
+                return; 
+            }
+
+            const allCols = Object.keys(json[0]);
+
+            // 辅助函数
+            function normalizeGrade(g) {
+                const map = { '6': '六年级', '7': '七年级', '8': '八年级', '9': '九年级', 
+                              '10': '十年级', '11': '十一年级', '12': '十二年级' };
+                if (map[g]) return map[g];
+                if (g === '6年级') return '六年级';
+                if (g === '7年级') return '七年级';
+                if (g === '8年级') return '八年级';
+                if (g === '9年级') return '九年级';
+                return g;
+            }
+
+            const subjectNameToId = {
+                '语文': 'chinese', '数学': 'math', '英语': 'english',
+                '物理': 'physics', '化学': 'chemistry'
+            };
+
+            // 识别关键列
+            const nameCol = allCols.find(c => c.includes('姓名'));
+            const gradeCol = allCols.find(c => c.includes('年级'));
+            const subjectCol = allCols.find(c => c.includes('科目') || c.includes('学科'));
+            const classTypeCol = allCols.find(c => c.includes('班型'));
+            
+            if (!nameCol) {
+                showFeedback('error', '未找到"姓名"列，请检查文件格式');
+                return;
+            }
+            if (!gradeCol) {
+                showFeedback('error', '未找到"年级"列，请检查文件格式');
+                return;
+            }
+            if (!subjectCol) {
+                showFeedback('error', '未找到"科目"列，请检查文件格式');
+                return;
+            }
+            if (!classTypeCol) {
+                showFeedback('error', '未找到"班型"列，请检查文件格式');
+                return;
+            }
+            
+            // 识别考试列（排除已知非成绩列）
+            const excludeCols = ['姓名', '年级', '科目', '学科', '班型', '班级类型', '任课教师', '备注', '平均分', '排名', '等级'];
+            const examCols = allCols.filter(c => 
+                !excludeCols.some(ex => c === ex || c.includes(ex)) &&
+                !c.includes('平均') && !c.includes('排名') && !c.includes('等级')
+            );
+            
+            if (examCols.length === 0) {
+                showFeedback('error', '未识别到考试列');
+                return;
+            }
+
+            // 统一读取第一行的年级和科目（假设整表同一科目）
+            const firstRow = json[0];
+            const fileGrade = normalizeGrade(String(firstRow[gradeCol] || '').trim());
+            const fileSubjectName = String(firstRow[subjectCol] || '').trim();
+            const fileSubjectId = subjectNameToId[fileSubjectName] || 'math';
+
+            // 预览头部
+            const preview = document.getElementById('uploadPreview');
+            let html = `<div style="background:rgba(59,130,246,0.08);border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+                <p style="color:var(--biz-text);font-size:14px;">📋 <strong style="color:var(--biz-blue);">${fileGrade} · ${fileSubjectName}</strong>，${examCols.length} 场考试</p>
+                <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">`;
+            
+            examCols.forEach(col => {
+                const existing = allExams.find(e => e.name === col.trim() && e.subject === fileSubjectId);
+                html += `<span style="background:${existing ? 'var(--stu-green)' : 'var(--stu-amber)'};color:white;padding:2px 10px;border-radius:4px;font-size:12px;">
+                    ${col} ${existing ? '✅已存在' : '🆕新考试'}</span>`;
+            });
+            html += '</div></div>';
+            
+            html += '<div style="overflow-x:auto;max-height:400px;overflow-y:auto;"><table class="data-table"><thead><tr><th>姓名</th><th>班型</th>';
+            examCols.forEach(c => html += `<th>${c}</th>`);
+            html += '<th>状态</th></tr></thead><tbody>';
+
+            const scoresToUpload = [];
+            const newExams = [];
+            const newStudents = [];
+
+            for (const row of json) {
+                const name = String(row[nameCol] || '').trim();
+                if (!name) continue;
+                
+                const rowClassType = String(row[classTypeCol] || '').trim();
+                const rowGrade = normalizeGrade(String(row[gradeCol] || '').trim());
+                const rowSubjectName = String(row[subjectCol] || '').trim();
+                const rowSubjectId = subjectNameToId[rowSubjectName] || fileSubjectId;
+                
+                let targetStudent = allStudents.find(s => s.name === name);
+                let targetClassId = null;
+                
+                // 处理班型和班级
+                if (rowClassType) {
+                    // 查找班型（精确匹配名称+科目）
+                    let classType = allClassTypes.find(t => t.name === rowClassType && t.subject === rowSubjectId);
+                    if (!classType) {
+                        const newCtId = 'ct' + Date.now() + Math.random().toString(36).slice(2,4);
+                        classType = { id: newCtId, name: rowClassType, subject: rowSubjectId, enabled: 1 };
+                        try {
+                            await apiPost('/api/class-types', classType);
+                            allClassTypes.push(classType);
+                            showFeedback('success', `✅ 已创建新班型：${rowClassType}`);
+                        } catch (err) {
+                            console.error('创建班型失败:', err);
+                        }
+                    }
+                    
+                    // 查找或创建班级
+                    let targetClass = allClasses.find(c => c.class_type_id === classType.id && c.grade === rowGrade);
+                    if (!targetClass) {
+                        const newClassId = 'c' + Date.now() + Math.random().toString(36).slice(2,4);
+                        targetClass = { 
+                            id: newClassId, 
+                            name: rowGrade + rowClassType + '班', 
+                            grade: rowGrade, 
+                            class_type_id: classType.id,
+                            student_ids: []
+                        };
+                        try {
+                            await apiPost('/api/classes', targetClass);
+                            allClasses.push(targetClass);
+                            showFeedback('success', `✅ 已创建新班级：${targetClass.name}`);
+                        } catch (err) {
+                            console.error('创建班级失败:', err);
+                        }
+                    }
+                    targetClassId = targetClass ? targetClass.id : null;
+                }
+                
+                // 学生不存在则创建
+                if (!targetStudent) {
+                    try {
+                        const newId = 's' + Date.now().toString().slice(-6) + Math.floor(Math.random()*100);
+                        const newAccount = name.toLowerCase().replace(/\s/g, '').replace(/[^a-z]/g, '');
+                        const finalAccount = newAccount || ('stu' + Date.now().toString().slice(-6));
+                        const studentData = {
+                            id: newId,
+                            name: name,
+                            account: finalAccount,
+                            password: '1234',
+                            phone: '13800000000',
+                            classId: targetClassId || 'c1'
+                        };
+                        await apiPost('/api/students', studentData);
+                        await loadAllData();
+                        targetStudent = allStudents.find(s => s.name === name);
+                        showFeedback('success', `✅ 已创建新学生：${name}`);
+                    } catch (err) {
+                        console.error('创建学生失败:', err);
+                    }
+                } else if (targetClassId && targetStudent.class_id !== targetClassId) {
+                    // 更新学生班级
+                    try {
+                        await apiPut('/api/students/' + targetStudent.id, { classId: targetClassId });
+                        targetStudent.class_id = targetClassId;
+                        const targetClass = allClasses.find(c => c.id === targetClassId);
+                        if (targetClass) {
+                            let classStudentIds = targetClass.student_ids ? JSON.parse(targetClass.student_ids) : [];
+                            if (!classStudentIds.includes(targetStudent.id)) {
+                                classStudentIds.push(targetStudent.id);
+                                await apiPost('/api/classes', {
+                                    id: targetClassId,
+                                    name: targetClass.name,
+                                    grade: targetClass.grade,
+                                    class_type_id: targetClass.class_type_id,
+                                    student_ids: classStudentIds
+                                });
+                            }
+                        }
+                    } catch (err) {
+                        console.error('更新学生班级失败:', err);
+                    }
+                }
+                
+                html += `<tr><td style="font-weight:600;">${name}</td><td>${rowClassType || '-'}</td>`;
+                
+                for (const col of examCols) {
+                    const rawVal = row[col];
+                    let score = null;
+                    if (rawVal !== '' && rawVal !== undefined && rawVal !== null) {
+                        const parsed = parseFloat(rawVal);
+                        if (!isNaN(parsed)) score = parsed;
+                    }
+                    
+                    let exam = allExams.find(e => e.name === col.trim() && e.subject === rowSubjectId);
+                    if (!exam && score !== null) {
+                        const newId = 'e' + Date.now() + '-' + Math.random().toString(36).slice(2,6);
+                        exam = { 
+                            id: newId, 
+                            name: col.trim(), 
+                            type: 'custom', 
+                            date: new Date().toISOString().slice(0,10), 
+                            subject: rowSubjectId, 
+                            class_ids: '[]'
+                        };
+                        newExams.push(exam);
+                        allExams.push(exam);
+                    }
+                    
+                    if (targetStudent && exam && score !== null) {
+                        scoresToUpload.push({ 
+                            studentId: targetStudent.id, 
+                            examId: exam.id, 
+                            subject: rowSubjectId,
+                            score: score 
+                        });
+                        html += `<td style="color:var(--stu-green);font-weight:600;">${score}</td>`;
+                    } else {
+                        html += `<td style="color:var(--biz-text3);">-</td>`;
+                    }
+                }
+                
+                html += `<td>${targetStudent ? '✅' : '❌ 未匹配'}</td></tr>`;
+            }
+            
+            html += '</tbody></table></div>';
+            html += `<div style="margin-top:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                <span style="color:var(--biz-text2);">📊 ${json.length} 人，${examCols.length} 场考试，${scoresToUpload.length} 条成绩</span>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn btn-outline" onclick="document.getElementById('uploadPreview').innerHTML=''">取消</button>
+                    <button class="btn btn-blue" id="confirmBatchUploadBtn">✅ 确认上传</button>
+                </div>
+            </div>`;
+            preview.innerHTML = html;
+
+            document.getElementById('confirmBatchUploadBtn').addEventListener('click', async () => {
+                showFeedback('loading', '正在上传...');
+                for (const exam of newExams) {
+                    await apiPost('/api/exams', exam);
+                }
+                const result = await apiPost('/api/scores/batch', { scores: scoresToUpload });
+                showFeedback('success', `✅ 成功上传 ${result.count || scoresToUpload.length} 条成绩${newExams.length > 0 ? `，新增 ${newExams.length} 场考试` : ''}`);
+                document.getElementById('uploadPreview').innerHTML = '';
+                await loadAllData();
+                // 重新初始化教师页面
+                initTeacherPage();
+                // 自动切换到上传数据的年级
+                const gradeSelect = document.getElementById('teacherGradeFilter');
+                if (gradeSelect) {
+                    if (!Array.from(gradeSelect.options).some(opt => opt.value === fileGrade)) {
+                        const opt = document.createElement('option');
+                        opt.value = fileGrade;
+                        opt.textContent = fileGrade;
+                        gradeSelect.appendChild(opt);
+                    }
+                    gradeSelect.value = fileGrade;
+                    const subjectSelect = document.getElementById('teacherSubjectFilter');
+                    if (subjectSelect) subjectSelect.value = fileSubjectId;
+                    applyTeacherFilters();
+                }
+                showTeacherPage('teacherUpload');
+            });
+            
+            showFeedback('success', `解析完成，识别到 ${examCols.length} 场考试`);
+        } catch (err) {
+            showFeedback('error', '解析失败: ' + err.message);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+// ========== 弹窗 ==========// ========== 弹窗 ==========
+function initModals() {
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+        if (e.target === document.getElementById('modalOverlay')) closeModal();
+    });
+}
+function showModal(title, body, footer = '') {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalBody').innerHTML = body;
+    document.getElementById('modalFooter').innerHTML = footer;
+    document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('show');
+}
+
+// ========== 反馈 ==========
+function showFeedback(type, message) {
+    const toast = document.getElementById('feedbackToast');
+    const icon = document.getElementById('feedbackIcon');
+    const msg = document.getElementById('feedbackMessage');
+    toast.className = 'feedback-toast ' + type;
+    if (type === 'loading') icon.innerHTML = '<div class="spinner"></div>';
+    else if (type === 'success') icon.innerHTML = '✅';
+    else if (type === 'error') icon.innerHTML = '❌';
+    msg.textContent = message;
+    toast.classList.add('show');
+    if (type !== 'loading') setTimeout(() => toast.classList.remove('show'), 3000);
+}
+</script>
+</body>
+</html>node server.js
+
