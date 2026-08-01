@@ -104,10 +104,10 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC'
 .biz-card { background: var(--biz-card); border-radius: 8px; border: 1px solid var(--biz-border); padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
 
 /* ========== 表格样式 ========== */
-.data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.data-table th { padding: 12px 16px; text-align: left; font-weight: 600; font-size: 13px; border-bottom: 1px solid rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.08); color: var(--stu-light-purple); }
+.data-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: auto; }
+.data-table th { padding: 12px 16px; text-align: left; font-weight: 600; font-size: 13px; border-bottom: 1px solid rgba(139, 92, 246, 0.2); background: rgba(139, 92, 246, 0.08); color: var(--stu-light-purple); white-space: nowrap; min-width: 80px; }
 .biz-layout .data-table th { background: rgba(59, 130, 246, 0.08); color: var(--biz-blue); border-bottom: 1px solid var(--biz-border); }
-.data-table td { padding: 12px 16px; color: var(--stu-text); border-bottom: 1px solid rgba(139, 92, 246, 0.08); }
+.data-table td { padding: 12px 16px; color: var(--stu-text); border-bottom: 1px solid rgba(139, 92, 246, 0.08); white-space: nowrap; min-width: 60px; }
 .biz-layout .data-table td { color: var(--biz-text); border-bottom: 1px solid var(--biz-border); }
 .data-table tr:hover td { background: rgba(139, 92, 246, 0.04); }
 .biz-layout .data-table tr:hover td { background: rgba(59, 130, 246, 0.04); }
@@ -1773,7 +1773,7 @@ async function handleScoreUpload(file) {
             });
             html += '</div></div>';
             
-            html += '<div style="overflow-x:auto;max-height:400px;overflow-y:auto;"><table class="data-table"><thead><tr><th>姓名</th><th>班型</th>';
+            html += '<div style="overflow-x:auto;max-height:400px;overflow-y:auto;border:1px solid var(--biz-border);border-radius:8px;"><table class="data-table" style="min-width:max-content;"><thead><tr><th>姓名</th><th>班型</th>';
             uniqueExamCols.forEach(c => html += `<th>${c}</th>`);
             html += '<th>状态</th></tr></thead><tbody>';
 
