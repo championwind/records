@@ -638,6 +638,15 @@ async function initStudentDashboard() {
     document.getElementById('stuTotalPoints').textContent = total;
     document.getElementById('pointsCard').onclick = () => showStudentPage('studentPoints');
 
+    // 根据学生班级自动推断默认科目
+    const cls = getClass(user.class_id);
+    if (cls) {
+        const ct = allClassTypes.find(t => t.id === cls.class_type_id);
+        if (ct && ct.subject) {
+            currentSubject = ct.subject;
+        }
+    }
+
     // 科目选择
     const selector = document.getElementById('subjectSelector');
     selector.innerHTML = '';
@@ -748,8 +757,11 @@ async function initStudentDashboard() {
             // 本班排名：只统计同班学生
             const examScores = getClassExamScores(exam.id, user.class_id).sort((a, b) => b.score - a.score);
             const rank = examScores.findIndex(s => s.student_id === user.id) + 1;
-            classRanks.push(rank > 0 ? rank : null);
-            examNames.push(exam.name);
+            // 只显示有成绩的考试（排除null）
+            if (rank > 0) {
+                classRanks.push(rank);
+                examNames.push(exam.name);
+            }
         });
         
         charts.rankTrend = new Chart(rankCtx, {
